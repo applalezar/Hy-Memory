@@ -1,44 +1,35 @@
-# Monorepo layout
+# Monorepo Düzeni
 
-The repository currently contains two independently buildable projects:
+Bu depo şu an bağımsız olarak derlenebilen iki projeden oluşur:
 
 ```text
 hy-memory/
-├── .github/           # Monorepo CI, native lifecycle and Release workflows
-├── hy_memory/          # Hy Memory SDK implementation
-├── tests/              # SDK tests
-├── plugins/            # SDK integrations
-├── pyproject.toml      # SDK package definition
-├── docs/               # Shared and SDK documentation
-├── memhub/             # End-user application workspace
-    ├── apps/core/      # Python Core / Runtime data plane
+├── .github/           # Monorepo CI, native lifecycle ve Release iş akışları
+├── hy_memory/          # Hy Memory SDK uygulaması
+├── tests/              # SDK testleri
+├── plugins/            # SDK entegrasyonları
+├── pyproject.toml      # SDK paket tanımı
+├── docs/               # Paylaşılan ve SDK belgeleri
+├── memhub/             # Son kullanıcı uygulama çalışma alanı
+    ├── apps/core/      # Python Core / Runtime veri düzlemi
     ├── apps/cli/       # CLI
-    ├── apps/desktop/   # macOS Electron application
-    ├── apps/web/       # Web UI
-    ├── packages/       # Contracts, host bridge, operations, runtime control
-    └── scripts/        # Build, packaging, release and verification tooling
+    ├── apps/desktop/   # macOS Electron uygulaması
+    ├── apps/web/       # Web arayüzü
+    ├── packages/       # Sözleşmeler, host bridge, operasyonlar, runtime kontrolü
+    └── scripts/        # Derleme, paketleme, yayın ve doğrulama araçları
 ```
 
-## Repository policy
+## Depo politikası
 
-The SDK remains at the repository root so its Python package layout and release
-flow stay stable. MemHub remains a complete subproject under `memhub/`. This
-public monorepo is the source of truth for both components.
+SDK, Python paket düzeni ve yayın akışı sabit kalsın diye depo kökünde kalır. MemHub, `memhub/` altında tamamlanmış bir alt projedir. Bu açık monorepo, her iki bileşenin de kaynak doğrusu olarak kullanılır.
 
-Release workflows may generate reviewed source or binary artifacts, but those
-artifacts do not replace this repository. Internal coordination notes,
-credentials, private acceptance evidence, generated reports, and build outputs
-do not belong in the public source tree.
+Yayın iş akışları incelenmiş kaynak veya ikili üretim dosyaları üretebilir; ancak bu çıktılar bu depoyu değiştirmez. Dahili koordinasyon notları, kimlik bilgileri, özel kabul kanıtları, üretim raporları ve derleme çıktıları açık kaynak ağaçlarında yer almamalıdır.
 
-## Current boundaries
+## Mevcut sınırlar
 
-- SDK commands run from the repository root.
-- MemHub commands run from `memhub/`.
-- Root GitHub workflows run SDK and MemHub checks from their respective working
-directories. Native lifecycle workflows produce reviewable Actions artifacts;
-tag releases remain fail-closed on public identity, signing and notarization.
-- Hy Memory is published as `hy-memory==2.0.4`. MemHub pins that public
-distribution; its selected npm package is `memhub-cli` 1.0.5.
-- Hy-Memory source uses Apache-2.0 at the repository root. Third-party
-  components retain their own licenses and attribution notices.
+- SDK komutları depo kökünden çalıştırılır.
+- MemHub komutları `memhub/` dizininden çalıştırılır.
+- Kök GitHub iş akışları SDK ve MemHub kontrollerini ilgili çalışma dizinlerinden yürütür. Native lifecycle iş akışları incelenebilir Actions çıktıları üretir; etiketleme sürümleri kamu kimliği, imza ve notarization gereksinimlerinde fail-closed davranır.
+- Hy Memory, `hy-memory==2.0.4` olarak yayınlanır. MemHub bu genel dağıtımı referans alır; seçili npm paketi `memhub-cli` 1.0.5'tir.
+- Hy-Memory kaynağı depo kökünde Apache-2.0 lisanslıdır. Üçüncü taraf bileşenler kendi lisanslarını ve attribution bildirimlerini korur.
 

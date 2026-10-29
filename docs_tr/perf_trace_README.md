@@ -1,55 +1,55 @@
-# 性能与 Pipeline 可观测性
+# Performans ve Pipeline Gözlemlenebilirliği
 
-Hy Memory 提供三类互补的观测数据：
+Hy Memory üç tür tamamlayıcı gözlem verisi sunar:
 
-1. `TRACE_PERF`：写入链路的 INFO 日志，适合快速 grep 单次请求。
-2. Pipeline logs：环节级结构化记录，可写 JSONL，并可通过 `MemoryInspector` 查询持久化 trace。
-3. System metrics：按时间窗口聚合的进程负载、延迟和存储操作统计。
+1. `TRACE_PERF`: Yazma zincirindeki INFO günlükleri; tek istek için hızlı `grep` için uygundur.
+2. Pipeline logları: Aşama bazlı yapılandırılmış kayıtlar; JSONL olarak yazılabilir ve `MemoryInspector` ile kalıcı trace sorgulanabilir.
+3. Sistem metrikleri: Zaman penceresine göre toplam iş yükü, gecikme ve depolama operasyon istatistikleri.
 
-三者都使用 `request_id` 关联请求，但用途和字段并不相同。
+Üçü de `request_id` ile isteği ilişkilendirir; ancak kullanım ve alanlar farklıdır.
 
-## 1. TRACE_PERF 日志
+## 1. TRACE_PERF logları
 
-写入链路会输出以下格式的 INFO 日志：
+Yazma zinciri aşağıdaki formatta INFO logu üretir:
 
 ```text
 TRACE_PERF [<request_id>] <STAGE> <key=value ...>
 ```
 
-当前可能出现的 System 1 stage：
+Şu anda olası System 1 stage'leri:
 
-| Stage | 含义 | 主要字段 |
+| Stage | Anlam | Ana alanlar |
 |---|---|---|
-| `S1_START` | 开始实际处理写入 | `waiting`, `user` |
-| `S1_L1_DONE` | L1_RAW embedding 与持久化阶段完成 | `l1_ms` |
-| `S1_EXTRACT_DONE` | Extractor 完成 | `extract_ms`, `summary_ms`, `memory` |
-| `S1_RECONCILE_DONE` | Reconcile 决策完成 | `ops`, `candidates`，以及各 op 数量 |
-| `S1_UPDATE_BATCH_DONE` | 批量 UPDATE 完成 | `nodes` |
-| `S1_ADD_BATCH_DONE` | 批量 ADD 完成 | `nodes` |
-| `S1_INTENTION_DONE` | L7 intention 写入完成 | `intentions` |
-| `S1_PERSIST_DONE` | 抽取结果持久化完成 | `ops` |
-| `S1_WORKFLOW_DONE` | System 1 workflow 完成 | `workflow_ms` |
+| `S1_START` | Gerçek yazma işlemi başlıyor | `waiting`, `user` |
+| `S1_L1_DONE` | L1_RAW embedding ve persist aşaması bitti | `l1_ms` |
+| `S1_EXTRACT_DONE` | Extractor tamamlandı | `extract_ms`, `summary_ms`, `memory` |
+| `S1_RECONCILE_DONE` | Reconcile kararı tamamlandı | `ops`, `candidates` ve her op sayısı |
+| `S1_UPDATE_BATCH_DONE` | Toplu UPDATE tamamlandı | `nodes` |
+| `S1_ADD_BATCH_DONE` | Toplu ADD tamamlandı | `nodes` |
+| `S1_INTENTION_DONE` | L7 intention yazımı tamamlandı | `intentions` |
+| `S1_PERSIST_DONE` | Çıkarım sonucu kalıcı hale getirildi | `ops` |
+| `S1_WORKFLOW_DONE` | System 1 workflow tamamlandı | `workflow_ms` |
 
-并非每个请求都会产生全部 stage。例如 lite 模式、空抽取、没有 intention 或没有批量 ADD/UPDATE 时，对应日志不会出现。
+Her istek tüm stage'leri üretmez. Örneğin lite mod, boş çıkarım, intention yoksa veya toplu ADD/UPDATE yoksa ilgili loglar görülmez.
 
-按请求查看：
+İstek bazında bakmak için:
 
 ```bash
 grep 'TRACE_PERF \[<request_id>\]' app.log
 ```
 
-`hy_memory/core/workload.py` 也会输出带 `TRACE_PERF` 前缀的 workload 排队日志，但格式不是上述 `[request_id] STAGE` 形式，分析时不要将两者混为一类。
+`hy_memory/core/workload.py` dosyası da `TRACE_PERF` ön ekiyle workload kuyruğu logları üretir; ancak format yukarıdaki `[request_id] STAGE` biçimi değildir. Analiz ederken bunları birbirinden ayırmak gerekir.
 
-### 写入返回的 timing
+### Yazma dönüşündeki timing
 
-chat 写入会在可用时返回 System 1 timing：
+Chat yazımı mümkünse System 1 timing bilgilerini döner:
 
 ```python
 result = client.add("User likes coffee", user_id="u1")
 print(result.get("timing", {}))
 ```
 
-字段包括：
+Alanlar şunları içerir:
 
 ```text
 sys1_waiting_ms
@@ -58,13 +58,13 @@ sys1_workflow_ms
 sys1_ops_avg_ms
 ```
 
-这些是阶段耗时，不是固定服务等级阈值。合理范围取决于 LLM、embedding、向量库、机器资源和并发量。
+Bunlar aşama süreleridir, sabit hizmet seviyesi eşikleri değildir. Uygun aralık LLM, embedding, vektör veritabanı, makine kaynakları ve eşzamanlılık seviyesine göre değişir.
 
-## 2. Pipeline logs
+## 2. Pipeline logları
 
-Pipeline logs 有两种输出，字段契约不同。
+Pipeline logları iki tür çıktıya sahiptir; alan sözleşmeleri farklıdır.
 
-JSONL 文件主要字段：
+JSONL dosyasındaki ana alanlar:
 
 ```text
 request_id, namespace, user_id, agent_id, session_id,
@@ -72,7 +72,7 @@ step, prompt, content, parsed, memory_ids,
 tokens, elapsed_ms, timestamp
 ```
 
-Inspector 读取的持久化 Pipeline Trace 主要字段：
+Inspector tarafından okunan kalıcı Pipeline Trace ana alanlar:
 
 ```text
 request_id, namespace, user_id, agent_id, session_id,
@@ -81,20 +81,18 @@ elapsed_ms, prompt_tokens, completion_tokens, total_tokens,
 event_at_ms, created_at
 ```
 
-### 两种输出
+### İki çıktı türü
 
-- JSONL log 默认启用，目录优先级为：`MEMORY_LOG_DIR` → `MEMORY_TRACE_LOG_DIR` → `{MEMORY_DATA_DIR}/logs/pipeline`。
-- 持久化 trace 由 `MEMORY_PIPELINE_TRACE_ENABLED` 控制，默认开启，写入 cache backend 供 Inspector 查询。
+- JSONL log varsayılan olarak açıktır; dizin önceliği: `MEMORY_LOG_DIR` → `MEMORY_TRACE_LOG_DIR` → `{MEMORY_DATA_DIR}/logs/pipeline`.
+- Kalıcı trace, `MEMORY_PIPELINE_TRACE_ENABLED` ile kontrol edilir; varsayılan açık ve cache backend'a yazılır; Inspector tarafından sorgulanabilir.
 
-两种写入都是 best-effort；观测写入失败不应中断主读写流程。
+İki yazma türü de best-effort'tir; gözlem yazımı başarısız olsa ana okuma/yazma akışını durdurmamalıdır.
 
-默认 `MEMORY_LOG_LLM_CONTENT=false`，`prompt` 和 LLM 输出（JSONL 的 `content`、持久化
-Trace 的 `response`）只保留长度与摘要哈希。只有显式设置为 `true` 才会记录完整输入
-输出；生产环境启用前应评估敏感信息风险。
+Varsayılan olarak `MEMORY_LOG_LLM_CONTENT=false`; `prompt` ve LLM çıktıları (JSONL içindeki `content`, kalıcı Trace içindeki `response`) yalnızca uzunluk ve özet hash olarak saklanır. Sadece açıkça `true` olarak ayarlanınca tam giriş ve çıktı kaydedilir; üretim ortamında etkinleştirmeden önce hassas veri riski değerlendirilmelidir.
 
-### 常见 step
+### Yaygın step'ler
 
-写入链常见 step：
+Yazma zincirinde sık görülen step'ler:
 
 ```text
 S1_EMBED
@@ -110,7 +108,7 @@ S1_AGENT_FAILED
 S1_L1_ROLLBACK
 ```
 
-working/coding 链常见 step：
+working/coding zincirinde sık görülen step'ler:
 
 ```text
 CODING_JUDGE
@@ -121,7 +119,7 @@ READ_CODING_VDB
 READ_CODING_RESULT
 ```
 
-chat search 的 read-side step 统一以 `READ_` 开头。当前定义包括：
+Chat arama tarafı read-side step'leri `READ_` önekiyle başlar. Şu an tanımlı olanlar:
 
 ```text
 READ_SCENE_JUDGE
@@ -142,11 +140,11 @@ READ_GRAPH_RERANK
 READ_SUMMARY
 ```
 
-实际 step 取决于 reader、scene、配置和召回结果，不保证每次搜索都包含完整列表。
+Gerçek step'ler reader, sahne, yapılandırma ve geri çağrı sonucuna bağlıdır; her aramada tam liste bulunmaz.
 
-### 使用 MemoryInspector
+### MemoryInspector kullanımı
 
-`MemoryInspector` 是公开 API：
+`MemoryInspector` kamuya açık bir API'dir:
 
 ```python
 from hy_memory import HyMemoryClient, MemoryInspector
@@ -166,19 +164,19 @@ extract_logs = inspector.get_pipeline_logs(
 )
 ```
 
-异步调用对应 `async_get_full_trace()`、`async_get_read_trace()` 和 `async_get_pipeline_logs()`。
+Asenkron çağrılar karşılığı: `async_get_full_trace()`, `async_get_read_trace()`, `async_get_pipeline_logs()`.
 
-## 3. System metrics
+## 3. Sistem metrikleri
 
-进程级 metrics 当前收集：
+İşlem düzeyi metrics şu anda toplanır:
 
-- System 1 started、completed、failed 和 active 数量，以及各阶段平均耗时。
-- 最近 60 秒完成量。
-- VDB 与 Graph 操作数和平均耗时。
+- System 1 started, completed, failed ve active sayıları; her aşama için ortalama süre.
+- Son 60 saniyede tamamlanan istek sayısı.
+- VDB ve Graph operasyon sayıları ile ortalama süreleri.
 
-返回 schema 还保留 `active_sys2`、`queued_sys2`、`sys2_requests` 和 System 2 latency 字段；但当前生产链路没有调用 `sys2_enqueue()`、`sys2_start()`、`sys2_end()`，因此... 
+Dönüş şemasında `active_sys2`, `queued_sys2`, `sys2_requests` ve System 2 latency alanları korunur; ancak mevcut üretim zinciri `sys2_enqueue()`, `sys2_start()`, `sys2_end()` çağırmadığı için ...
 
-公开 SDK：
+Açık SDK:
 
 ```python
 metrics = client.get_metrics(minutes=10)
@@ -186,13 +184,13 @@ metrics = inspector.get_system_metrics(minutes=10)
 metrics = await client.async_get_metrics(minutes=10)
 ```
 
-HTTP Server 入口：
+HTTP Sunucu girişi:
 
 ```text
 GET /api/v1/metrics?minutes=10
 ```
 
-主要返回字段：
+Ana dönen alanlar:
 
 ```text
 uptime_seconds
@@ -205,9 +203,9 @@ sys2_requests
 since
 ```
 
-没有样本的平均耗时或存储字段可能为空。指标按分钟聚合；cache backend 支持相关方法时会持久化，后台每分钟 flush，并清理 7 天前的数据。active/que... 
+Ortalama gecikme veya depolama alanları örnek yoksa boş olabilir. Metrikler dakika bazında toplanır; cache backend ilgili yöntemleri destekliyorsa kalıcı hale getirilir, arka planda her dakika flush yapılır ve 7 gün önceki veriler temizlenir. active/queued gibi alanlar aynı zaman penceresindeki canlı işlere ilişkin sayıları gösterir.
 
-## 4. 定向验证
+## 4. Hedefli doğrulama
 
 ```bash
 python -m pytest -q \

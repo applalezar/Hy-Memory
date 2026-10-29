@@ -1,31 +1,28 @@
-# Hy Memory Search 与 Reader 指南
+# Hy Memory Search ve Reader Rehberi
 
-本文描述当前 `HyMemoryClient.search()` / `async_search()` 的公开参数和返回契约。
+Bu belge mevcut `HyMemoryClient.search()` / `async_search()` için açık parametreleri ve dönüş sözleşmesini açıklar.
 
-## Reader 选择
+## Reader seçimi
 
 ```python
 client.search("query", user_ids=["u1"], reader="hybrid")
-client.search("query", user_ids=["u1"])  # HY_MEMORY_READER；默认 legacy
+client.search("query", user_ids=["u1"])  # HY_MEMORY_READER; varsayılan legacy
 ```
 
-当前只支持：
+Şu anda yalnızca şunlar desteklenir:
 
-- `legacy`：候选召回使用向量检索。
-- `hybrid`：在向量候选之外增加后端关键词/BM25 候选。
+- `legacy`: Aday geri çağrı vektör araması kullanır.
+- `hybrid`: Vektör adayına ek olarak arka uç keyword/BM25 adaylarını ekler.
 
-未知名称会记录 warning 并回退到 `legacy`。两个 Reader 继承同一共享读管线，区别仅为
-是否执行关键词候选召回；Schema、Intention、Episode、Tag/Entity、Graph、演化链、本地
-Rerank、配额和公开结果格式均一致。
+Bilinmeyen isimler warning logu yazıp `legacy`'e düşer. İki Reader aynı paylaşılan okuma hattını kullanır; tek fark keyword aday geri çağrısı yapıp yapmamalarıdır. Schema, Intention, Episode, Tag/Entity, Graph, evrim zinciri, yerel Rerank, kota ve açık sonuç formatı aynıdır.
 
-关键词通道依赖 Vector Store。Chroma 明确返回空关键词结果，因此 `hybrid` 在 Chroma 上
-退化为纯向量候选召回；支持关键词或 sparse/BM25 的后端才会产生额外候选。
+Keyword kanalı Vector Store'a dayanır. Chroma açıkça boş keyword sonucu döndürür; bu yüzden `hybrid` Chroma üzerinde saf vektör aday geri çağrısına düşer. Keyword veya sparse/BM25 destekleyen arka uçlar ek aday üretir.
 
-## Chat 检索参数
+## Chat arama parametreleri
 
 ```python
 result = client.search(
-    query="用户喜欢什么？",
+    query="Kullanıcı ne seviyor?",
     user_ids=["u1"],
     agent_ids=None,
     session_ids=None,
@@ -42,46 +39,41 @@ result = client.search(
 )
 ```
 
-| 参数 | 当前语义 |
+| Parametre | Mevcut anlam |
 |---|---|
-| `limit` | `normal` 通道最大返回数，默认 `10` |
-| `min_score` | `normal` 通道最低分，默认 `0.4` |
-| `schema_limit` | L6 Schema 独立上限，默认 `10`；`0` 关闭，负数表示不限制 |
-| `schema_min_score` | L6 正向语义召回阈值，默认 `0.4`；反向证据命中的 Schema 不会在 Client 层再次按该值过滤 |
-| `intention_limit` | L7 Proactive 独立上限，默认 `0`，即关闭该路召回 |
-| `created_after` | 事件时间下界，Unix timestamp |
-| `layers` | 只召回指定 MemoryLayer；`l1_raw` 不会由 Search 对外返回 |
-| `reader` | 本次调用覆盖 Reader；空字符串使用 `HY_MEMORY_READER` |
-| `include_sources` | 调用来源白名单；空列表表示不限 |
-| `exclude_sources` | 调用来源黑名单；与白名单冲突时黑名单优先 |
+| `limit` | `normal` kanalının maksimum dönen sayısı, varsayılan `10` |
+| `min_score` | `normal` kanalının minimum puanı, varsayılan `0.4` |
+| `schema_limit` | L6 Schema için ayrı limit, varsayılan `10`; `0` kapatır, negatif değer sınırsız demektir |
+| `schema_min_score` | L6 pozitif anlamsal geri çağrı eşiği, varsayılan `0.4`; ters kanıtlarla gelen Schema için Client katmanında bu değer yeniden filtrelenmez |
+| `intention_limit` | L7 Proactive için ayrı limit, varsayılan `0` yani kapalı |
+| `created_after` | Olay zamanının alt sınırı, Unix timestamp |
+| `layers` | Yalnızca belirtilen MemoryLayer geri çağrılır; `l1_raw` Search tarafından dışarıya döndürülmez |
+| `reader` | Bu çağrı için Reader geçersiz kılınır; boş string `HY_MEMORY_READER` değerini kullanır |
+| `include_sources` | Çağrı kaynağı beyaz listesi; boş liste sınırsız anlamına gelir |
+| `exclude_sources` | Çağrı kaynağı kara listesi; beyaz liste ile çakışırsa kara liste önceliklidir |
 
-`query` 和 `queries` 二选一，`user_ids` 必须为非空列表。
+`query` ve `queries` birbirinden seçilir; `user_ids` boş olmayan liste olmalıdır.
 
-L0 basic info 已从 Search 拆出：
+L0 basic info Search'den ayrıldı:
 
 ```python
 profile = client.get_user_profile(user_id="u1")
 ```
 
-该接口只按 `user_id` 读取完整画像。Ultra catalog/supplement 也只通过该接口附加，不占
-`schema_limit`。
+Bu arayüz yalnızca `user_id` ile tam profil okur. Ultra catalog/supplement de yalnızca bu arayüzden eklenir ve `schema_limit` altında sayılmaz.
 
-## Search mode 与生产力路由
+## Search modu ve üretkenlik yönlendirme
 
-- `search_mode="default"` + 单个 `query`：固定 chat/normal，零 LLM。
-- `search_mode="default"` + `queries=[...]`：Coding 开启时一次 LLM 完成场景分类和
-  rewrite；Coding 关闭但 Query Rewrite 开启时只做 rewrite/time；两者都关闭时零 LLM。
-- `search_mode="agentic"`：单 query、多 queries 都执行一次 LLM 判断、改写和时间解析。
-- 显式 `scene="chat" | "working" | "coding"`：跳过 judge/rewrite LLM。
+- `search_mode="default"` + tek `query`: sabit chat/normal, sıfır LLM.
+- `search_mode="default"` + `queries=[...]`: Coding açıkken tek LLM ile sahne sınıflandırması ve rewrite; Coding kapalı ama Query Rewrite açıkken yalnızca rewrite/time; ikisi de kapalıysa sıfır LLM.
+- `search_mode="agentic"`: tek veya çoklu query için tek LLM ile sahne değerlendirmesi, query rewrite ve zaman aralığı çözümlemesi.
+- Açık `scene="chat" | "working" | "coding"`: judge/rewrite LLM atlanır.
 
-default 多-query 超过 `MEMORY_QUERY_REWRITE_MAX_CHARS` 时不改写：Coding 开启则只分类，
-Coding 关闭则直接使用最后一条 query。
+Default çoklu-query, `MEMORY_QUERY_REWRITE_MAX_CHARS` aşıldığında rewrite yapılmaz: Coding açık ise yalnızca sınıflandırma yapılır, kapalıysa son query kullanılır.
 
-路由到 `working` / `coding` 后，Search 读取独立生产力记忆库，返回 `facts` /
-`experiences`，不使用 chat 三通道结构。`coding` 还返回 `chain_block` / `chain_used`
-（默认空；需 `MEMORY_CODING_CHAIN_BLOCK_ENABLED` 才注入 diff 块）。
+`working` / `coding` rotasından sonra Search ayrı üretkenlik hafıza veritabanını okur ve `facts` / `experiences` döner; chat üç kanal yapısını kullanmaz. `coding` ayrıca `chain_block` / `chain_used` döner (varsayılan boş; `MEMORY_CODING_CHAIN_BLOCK_ENABLED` açıkken diff bloğu eklenir).
 
-## Chat 成功返回结构
+## Chat başarılı dönüş yapısı
 
 ```json
 {
@@ -93,8 +85,8 @@ Coding 关闭则直接使用最后一条 query。
   },
   "rewrite": {
     "used": false,
-    "original_query": "用户喜欢什么？",
-    "effective_query": "用户喜欢什么？",
+    "original_query": "Kullanıcı ne seviyor?",
+    "effective_query": "Kullanıcı ne seviyor?",
     "created_after": null,
     "scene": "normal"
   },
@@ -102,38 +94,28 @@ Coding 关闭则直接使用最后一条 query。
 }
 ```
 
-Reader 执行失败时仍返回空的 `memories` 三桶和 `request_id` / `elapsed_ms`，但当前失败
-兜底不包含 `rewrite`。
+Reader başarısız olsa bile boş `memories` üç kovası, `request_id` ve `elapsed_ms` döner; mevcut fail-back durumunda `rewrite` alanı dahil edilmez.
 
-每条公开结果的稳定基础字段包括 `memory_id`、`content`、`score`、`layer`、`user_id`、
-`agent_id`、`source`、`retrieval_source`、`owner`、`tags`、`memory_at`、
-`gmt_created` 和 `meta`。`source` 是写入应用来源；`retrieval_source` 是内部召回通道
-（例如 VDB / Schema / Episode）的诊断标记。特定能力可能附带
-`evolution_chain`、`episode_id`、`capsule_memories`、`timeline` 或 `rerank_score`。
+Her açık sonuç için sabit temel alanlar: `memory_id`, `content`, `score`, `layer`, `user_id`, `agent_id`, `source`, `retrieval_source`, `owner`, `tags`, `memory_at`, `gmt_created`, `meta`. `source` yazım uygulama kaynağıdır; `retrieval_source` iç geri çağrı kanalı (ör. VDB / Schema / Episode) tanılayıcı etiketidir. Bazı yetenekler `evolution_chain`, `episode_id`, `capsule_memories`, `timeline` veya `rerank_score` gibi alanlar da ekleyebilir.
 
-Reader 内部的 `_semantic`、`_bm25` 等私有分数不会由 `HyMemoryClient.search()` 作为
-单条记忆字段透出；更详细的召回诊断仍应使用 pipeline trace。
+Reader içindeki `_semantic`, `_bm25` gibi özel puanlar `HyMemoryClient.search()` tarafından tek bir hafıza alanı olarak dışarıya verilmez; daha detaylı geri çağrı tanısı için pipeline trace kullanılmalıdır.
 
-source 过滤由底层 backend 在 `limit` / Top-K 之前完成：Qdrant 使用同一个 payload
-Filter，Chroma 使用 metadata where，FAISS 使用 ID selector，Neo4j/Kuzu Graph 先按
-属性筛选再计算相似度。不会按 source 拆成多路召回，也不会依赖 over-fetch 后过滤。
-多来源派生记忆使用 `source="mixed"`；开启任意 source 过滤时默认 fail-closed 排除，
-除非白名单显式包含 `mixed`。
+Kaynak filtresi, alt seviye backend tarafında `limit` / Top-K öncesinde yapılır: Qdrant aynı payload filter kullanır, Chroma metadata `where` kullanır, FAISS ID selector kullanır, Neo4j/Kuzu Graph önce özellik filtresi sonra benzerlik hesaplar. Kaynak bazlı çoklu geri çağrı yapılmaz; over-fetch sonrası filtreleme kullanmaz. Çok kaynaklı türetilmiş hafızalar `source="mixed"` olarak işaretlenir; herhangi bir source filtresi açıkken varsayılan fail-closed olarak dışarıda tutulur; yalnızca beyaz listedeki `mixed` açıkça dahil edilirse döner.
 
-## 本地 Rerank
+## Yerel Rerank
 
-本地 cross-encoder Rerank 是两个 Reader 共用的后处理，默认关闭：
+Yerel cross-encoder Rerank iki Reader tarafından paylaşılan son işlem olarak çalışır ve varsayılan kapalıdır:
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_LOCAL_RERANK_ENABLED` | `false` | 是否启用本地 Rerank |
-| `MEMORY_LOCAL_RERANK_MODEL` | `nreimers/mmarco-mMiniLMv2-L6-H384-v1` | 小型多语言 Hugging Face 模型名或本地路径 |
-| `MEMORY_LOCAL_RERANK_DEVICE` | `auto` | `auto` / `cpu` / `cuda` 等 device |
-| `MEMORY_LOCAL_RERANK_BATCH_SIZE` | `16` | 单次模型 forward 的 batch size |
-| `MEMORY_LOCAL_RERANK_MAX_LENGTH` | `512` | Tokenizer 最大长度 |
-| `MEMORY_LOCAL_RERANK_POOL_FACTOR` | `3` | 候选池相对最终 `limit` 的倍数 |
+| `MEMORY_LOCAL_RERANK_ENABLED` | `false` | Yerel Rerank açık mı |
+| `MEMORY_LOCAL_RERANK_MODEL` | `nreimers/mmarco-mMiniLMv2-L6-H384-v1` | Küçük çok dilli Hugging Face modeli adı veya yerel yol |
+| `MEMORY_LOCAL_RERANK_DEVICE` | `auto` | `auto` / `cpu` / `cuda` gibi cihaz |
+| `MEMORY_LOCAL_RERANK_BATCH_SIZE` | `16` | Tek model forward için batch boyutu |
+| `MEMORY_LOCAL_RERANK_MAX_LENGTH` | `512` | Tokenizer maksimum uzunluğu |
+| `MEMORY_LOCAL_RERANK_POOL_FACTOR` | `3` | Aday havuzunun nihai `limit` ile oranı |
 
-也可以通过 Client 配置：
+Ayrıca Client yapılandırmasıyla da etkinleştirilebilir:
 
 ```python
 from hy_memory import HyMemoryClient
@@ -150,17 +132,13 @@ client = HyMemoryClient.from_config({
 })
 ```
 
-安装可选依赖：
+İsteğe bağlı bağımlılık kurulum:
 
 ```bash
 pip install 'hy-memory[rerank]==2.0.4'
 ```
 
-启用后，`HyMemoryClient(...)` 构造阶段会完成模型下载/读取、device 放置和一次 dummy
-forward；构造成功后 Search 不再触发模型加载。初始化失败会直接抛出 `RuntimeError`，避免
-服务看似 ready、首个用户请求才暴露问题。运行中的单次推理失败或非法分数仍 fail-open，
-保留 Rerank 前顺序。
+Etkinleştirildiğinde `HyMemoryClient(...)` oluşturma aşamasında model indirme/okuma, device yerleştirme ve bir dummy forward yapılır; oluşturma başarılı olduktan sonra Search tekrar model yükleme yapmaz. Başlatma başarısız olursa doğrudan `RuntimeError` fırlatılır; böylece servis hazır gibi görünürken ilk kullanıcı isteğinde sorun çıkarılmaz. Çalışma sırasında tek bir inference başarısız olursa veya geçersiz skor gelirse fail-open davranışı sürdürülür ve Rerank öncesi sıra korunur.
 
-SDK 不设置 Rerank Search 并发上限，也不串行化模型 forward；请求并发由调用方或部署层
-控制。`MEMORY_LOCAL_RERANK_BATCH_SIZE` 只控制一次 forward 的 batch，不是并发限制。
+SDK, Rerank Search için eşzamanlılık üst sınırı belirlemez ve model forward'ını da sıralı hale getirmez; istek eşzamanlılığı çağıran taraf veya dağıtım katmanı tarafından kontrol edilir. `MEMORY_LOCAL_RERANK_BATCH_SIZE` yalnızca tek forward için batch boyutunu ayarlar, eşzamanlılık sınırı değildir.
 

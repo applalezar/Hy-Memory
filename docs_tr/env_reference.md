@@ -1,212 +1,205 @@
-# Hy Memory SDK 环境变量参考
+# Hy Memory SDK Ortam Değişkenleri Referansı
 
-本文只列当前代码实际读取、且对公开 SDK 功能有直接作用的配置。所有变量均可通过进程环境
-或 `.env` 设置；未设置时使用表中的默认值。
+Bu belge yalnızca mevcut kodun gerçekten okuduğu ve kamuya açık SDK işlevi için doğrudan etkisi olan yapılandırmaları listeler. Tüm değişkenler süreç ortamı veya `.env` üzerinden ayarlanabilir; tanımlanmazsa tablo içindeki varsayılan değerler kullanılır.
 
-## 核心配置
+## Temel Yapılandırma
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
 | `MEMORY_MODE` | `pro` | `lite` / `pro` / `ultra` |
-| `MEMORY_DATA_DIR` | `~/.hy_memory` | 本地数据、缓存和日志根目录 |
+| `MEMORY_DATA_DIR` | `~/.hy_memory` | Yerel veri, önbellek ve günlük kökü |
 
-- `lite`：纯 Embedding 写入，Graph 强制关闭。
-- `pro`：LLM 提取与 reconcile；Graph 由 `MEMORY_ENABLE_GRAPH` 控制。
-- `ultra`：具备 pro 能力并强制启用 Graph；System 2 由调用方显式执行
-  `client.evolve()`，不会在 `add()` 后自动入队。
+- `lite`: Saf Embedding yazımı, Graph zorunlu kapalı.
+- `pro`: LLM çıkarım ve reconcile; Graph `MEMORY_ENABLE_GRAPH` ile kontrol edilir.
+- `ultra`: Pro yetenekleri taşır ve Graph zorunlu olarak açılır; System 2 çağıran tarafın açıkça `client.evolve()` çağırmasını bekler; `add()` sonrasında otomatik kuyruğa alınmaz.
 
 ## LLM
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_LLM_PROVIDER` | `openai` | OpenAI-compatible Chat Completions 协议 |
-| `MEMORY_LLM_MODEL` | `gpt-4.1-nano` | 模型名 |
-| `MEMORY_LLM_API_KEY` | — | 回退：`LLM_API_KEY`、`OPENAI_API_KEY` |
-| `MEMORY_LLM_BASE_URL` | — | 回退到 `LLM_BASE_URL` |
-| `MEMORY_LLM_TEMPERATURE` | `0.1` | 统一温度；`none` / `omit` / 空值表示不发送 |
-| `MEMORY_LLM_OMIT_TEMPERATURE` | `false` | `true` 时完全不发送 `temperature` |
-| `MEMORY_LLM_MAX_TOKENS` | `1024` | 通用生成上限 |
-| `MEMORY_AGENT_MAX_TOKENS` | `2000` | Extract/Reconcile/System 2 等 Agent 调用上限 |
-| `MEMORY_LLM_TIMEOUT` | `180` | 单次超时，秒 |
-| `MEMORY_LLM_MAX_RETRIES` | `5` | 最大重试次数 |
-| `MEMORY_LLM_RETRY_DELAY` | `1.0` | 重试间隔，秒 |
-| `MEMORY_LLM_EXTRA_HEADERS` | — | JSON object，附加 HTTP headers |
-| `MEMORY_LLM_EXTRA_BODY` | — | JSON object，附加请求 body |
-| `MEMORY_FEW_SHOT_ENABLED` | `false` | 为内置 Extractor/Reconcile prompt 附加 few-shot |
-| `MEMORY_ENABLE_INTENTION` | `true` | 是否抽取并写入 L7 Intention |
-| `MEMORY_LOG_LLM_CONTENT` | `false` | `true` 才允许日志记录完整 prompt/response |
+| `MEMORY_LLM_PROVIDER` | `openai` | OpenAI-uyumlu Chat Completions protokolü |
+| `MEMORY_LLM_MODEL` | `gpt-4.1-nano` | Model adı |
+| `MEMORY_LLM_API_KEY` | — | Yedek: `LLM_API_KEY`, `OPENAI_API_KEY` |
+| `MEMORY_LLM_BASE_URL` | — | Yedek: `LLM_BASE_URL` |
+| `MEMORY_LLM_TEMPERATURE` | `0.1` | Evrensel sıcaklık; `none` / `omit` / boş değer `temperature` göndermemek için |
+| `MEMORY_LLM_OMIT_TEMPERATURE` | `false` | `true` ise `temperature` alanı tamamen gönderilmez |
+| `MEMORY_LLM_MAX_TOKENS` | `1024` | Genel üretim üst sınırı |
+| `MEMORY_AGENT_MAX_TOKENS` | `2000` | Extract/Reconcile/System 2 gibi Agent çağrıları için üst sınır |
+| `MEMORY_LLM_TIMEOUT` | `180` | Tek istek için zaman aşımı, saniye |
+| `MEMORY_LLM_MAX_RETRIES` | `5` | Maksimum yeniden deneme sayısı |
+| `MEMORY_LLM_RETRY_DELAY` | `1.0` | Yeniden deneme gecikmesi, saniye |
+| `MEMORY_LLM_EXTRA_HEADERS` | — | JSON nesnesi, HTTP header'ları ekler |
+| `MEMORY_LLM_EXTRA_BODY` | — | JSON nesnesi, istek body'ine eklenir |
+| `MEMORY_FEW_SHOT_ENABLED` | `false` | Dahili Extractor/Reconcile prompt'una few-shot ekler |
+| `MEMORY_ENABLE_INTENTION` | `true` | L7 Intention çıkarılıp yazılacak mı |
+| `MEMORY_LOG_LLM_CONTENT` | `false` | `true` olduğunda tam prompt/response günlük kaydı yapılır |
 
 ## Embedding
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_EMBEDDER_PROVIDER` | `openai` | OpenAI-compatible Embeddings 协议 |
-| `MEMORY_EMBEDDER_MODEL` | `text-embedding-3-small` | 模型名 |
-| `MEMORY_EMBEDDER_API_KEY` | — | 回退：`EMBEDDING_API_KEY`、`OPENAI_API_KEY` |
-| `MEMORY_EMBEDDER_BASE_URL` | — | 回退到 `EMBEDDING_BASE_URL` |
-| `MEMORY_EMBEDDING_DIMS` | `1536` | Collection 维度；应与模型输出一致 |
-| `MEMORY_EMBEDDER_TIMEOUT` | `15` | 单次超时，秒 |
-| `MEMORY_EMBEDDER_MAX_RETRIES` | `2` | 最大重试次数 |
-| `MEMORY_EMBEDDER_RETRY_DELAY` | `0.3` | 重试间隔，秒 |
-| `MEMORY_EMBEDDER_EXTRA_HEADERS` | — | JSON object，附加 HTTP headers |
-| `MEMORY_EMBEDDER_EXTRA_BODY` | — | JSON object，附加请求 body |
+| `MEMORY_EMBEDDER_PROVIDER` | `openai` | OpenAI-uyumlu Embeddings protokolü |
+| `MEMORY_EMBEDDER_MODEL` | `text-embedding-3-small` | Model adı |
+| `MEMORY_EMBEDDER_API_KEY` | — | Yedek: `EMBEDDING_API_KEY`, `OPENAI_API_KEY` |
+| `MEMORY_EMBEDDER_BASE_URL` | — | Yedek: `EMBEDDING_BASE_URL` |
+| `MEMORY_EMBEDDING_DIMS` | `1536` | Collection boyutu; model çıktısıyla eşleşmelidir |
+| `MEMORY_EMBEDDER_TIMEOUT` | `15` | Tek istek için zaman aşımı, saniye |
+| `MEMORY_EMBEDDER_MAX_RETRIES` | `2` | Maksimum yeniden deneme sayısı |
+| `MEMORY_EMBEDDER_RETRY_DELAY` | `0.3` | Yeniden deneme gecikmesi, saniye |
+| `MEMORY_EMBEDDER_EXTRA_HEADERS` | — | JSON nesnesi, HTTP header'ları ekler |
+| `MEMORY_EMBEDDER_EXTRA_BODY` | — | JSON nesnesi, istek body'ine eklenir |
 
 ## Vector Store
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
 | `MEMORY_VECTOR_STORE` | `chroma` | `chroma` / `qdrant` / `faiss` |
-| `MEMORY_COLLECTION_NAME` | `agent_memories` | 主 collection 名 |
-| `MEMORY_PERSIST_DIR` | `{DATA_DIR}/data/vector_db` | 本地持久化目录 |
-| `MEMORY_VECTOR_HOST` | — | Qdrant 等远程后端主机 |
-| `MEMORY_VECTOR_PORT` | — | 远程后端端口 |
-| `MEMORY_VECTOR_API_KEY` | — | 远程后端 API Key |
-`hybrid` 的关键词候选依赖后端实现。Chroma 会退化为纯向量；Qdrant 可使用
-sparse/BM25 候选。
+| `MEMORY_COLLECTION_NAME` | `agent_memories` | Ana collection adı |
+| `MEMORY_PERSIST_DIR` | `{DATA_DIR}/data/vector_db` | Yerel kalıcı dizin |
+| `MEMORY_VECTOR_HOST` | — | Qdrant gibi uzak arka uç ana sunucusu |
+| `MEMORY_VECTOR_PORT` | — | Uzak arka uç portu |
+| `MEMORY_VECTOR_API_KEY` | — | Uzak arka uç API Anahtarı |
+
+Hybrid anahtar kelime adayları arka uç uygulamasına bağlıdır. Chroma net şekilde boş keyword sonucu döndürür; bu nedenle `hybrid` Chroma üzerinde saf vektör adaylarına düşer. Qdrant gibi sparse/BM25 destekleyen arka uçlar ek adaylar üretir.
 
 ## Graph Store
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_ENABLE_GRAPH` | `false` | 只在 pro 生效；lite 强制关，ultra 强制开 |
+| `MEMORY_ENABLE_GRAPH` | `false` | Yalnızca pro için etkili; lite zorunlu kapalı, ultra zorunlu açık |
 | `MEMORY_GRAPH_PROVIDER` | `kuzu` | `kuzu` / `neo4j` |
-| `MEMORY_GRAPH_DB_PATH` | `{DATA_DIR}/data/kuzu_db` | Kuzu 数据库路径 |
-| `NEO4J_URL` | `bolt://localhost:7687` | Neo4j Bolt URL；可回退到 `MEMGRAPH_URL` |
-| `NEO4J_USERNAME` | — | 可回退到 `MEMGRAPH_USERNAME` |
-| `NEO4J_PASSWORD` | — | 可回退到 `MEMGRAPH_PASSWORD` |
+| `MEMORY_GRAPH_DB_PATH` | `{DATA_DIR}/data/kuzu_db` | Kuzu veritabanı yolu |
+| `NEO4J_URL` | `bolt://localhost:7687` | Neo4j Bolt URL; `MEMGRAPH_URL` ile yedeklenebilir |
+| `NEO4J_USERNAME` | — | `MEMGRAPH_USERNAME` ile yedeklenebilir |
+| `NEO4J_PASSWORD` | — | `MEMGRAPH_PASSWORD` ile yedeklenebilir |
 | `NEO4J_DATABASE` | `neo4j` | Neo4j database |
 
-Graph 写入和读侧 Rerank 的高级开关见 [pro_graph_design.md](pro_graph_design.md)。
+Graph yazma ve okuma tarafı Rerank için gelişmiş anahtarlar için [pro_graph_design.md](pro_graph_design.md) dosyasına bakın.
 
 ## Cache
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_CACHE_BACKEND` | `sqlite` | `sqlite` / `mysql`；不支持 Redis |
-| `MEMORY_CACHE_DB_PATH` | `{DATA_DIR}/data/cache.db` | SQLite 文件路径 |
-| `MEMORY_MYSQL_HOST` | `localhost` | MySQL 主机 |
-| `MEMORY_MYSQL_PORT` | `3306` | MySQL 端口 |
-| `MEMORY_MYSQL_USER` | `root` | MySQL 用户 |
-| `MEMORY_MYSQL_PASSWORD` | — | MySQL 密码 |
-| `MEMORY_MYSQL_DATABASE` | `hy_memory` | MySQL 数据库 |
-| `MEMORY_MYSQL_POOL_SIZE` | `10` | 连接池大小 |
-| `MEMORY_MYSQL_POOL_RECYCLE` | `3600` | 连接回收周期，秒 |
+| `MEMORY_CACHE_BACKEND` | `sqlite` | `sqlite` / `mysql`; Redis desteklenmez |
+| `MEMORY_CACHE_DB_PATH` | `{DATA_DIR}/data/cache.db` | SQLite dosya yolu |
+| `MEMORY_MYSQL_HOST` | `localhost` | MySQL ana sunucu |
+| `MEMORY_MYSQL_PORT` | `3306` | MySQL portu |
+| `MEMORY_MYSQL_USER` | `root` | MySQL kullanıcı adı |
+| `MEMORY_MYSQL_PASSWORD` | — | MySQL şifresi |
+| `MEMORY_MYSQL_DATABASE` | `hy_memory` | MySQL veritabanı |
+| `MEMORY_MYSQL_POOL_SIZE` | `10` | Bağlantı havuzu boyutu |
+| `MEMORY_MYSQL_POOL_RECYCLE` | `3600` | Bağlantı geri dönüş süresi, saniye |
 
-## 写入、场景与 Query Rewrite
+## Yazma, Sahne ve Query Rewrite
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `RECONCILE_ENABLED` | `true` | 是否执行候选检索和 reconcile |
-| `MEMORY_ENABLE_SEARCH_QUERY` | `false` | Reconcile 前是否额外用 LLM 生成检索 query |
-| `MEMORY_EXTRACT_HISTORY_TURNS` | `5` | 本次输入之外注入 Extractor 的历史 user-turn 数 |
-| `MEMORY_CODING_ENABLED` | `true` | 是否启用 working/coding 独立链路 |
-| `MEMORY_CODING_DB_PATH` | `{DATA_DIR}/data/coding_memory.db` | 生产力记忆 SQLite 路径 |
-| `MEMORY_CODING_TOOL_RESULT_MAX_BYTES` | `2048` | 单条 tool result 的最大字节数 |
-| `MEMORY_CODING_VERBATIM_FALLBACK_ENABLED` | `false` | 无抽取结果时是否把渲染对话保存成 working fact |
-| `MEMORY_ENABLE_QUERY_REWRITE` | `false` | Coding 关闭时控制 default 多-query 是否 rewrite；Coding 开启时多-query 无论此值都会分类并 rewrite |
-| `MEMORY_QUERY_REWRITE_MAX_CHARS` | `1000` | default 多-query rewrite 长度保护 |
+| `RECONCILE_ENABLED` | `true` | Aday arama ve reconcile çalıştırılsın mı |
+| `MEMORY_ENABLE_SEARCH_QUERY` | `false` | Reconcile öncesi ek LLM ile arama query üretilecek mi |
+| `MEMORY_EXTRACT_HISTORY_TURNS` | `5` | Extractor'a eklenen önceki kullanıcı turu sayısı |
+| `MEMORY_CODING_ENABLED` | `true` | `working/coding` ayrı akışları açık mı |
+| `MEMORY_CODING_DB_PATH` | `{DATA_DIR}/data/coding_memory.db` | Üretkenlik hafıza SQLite yolu |
+| `MEMORY_CODING_TOOL_RESULT_MAX_BYTES` | `2048` | Tek tool result için maksimum bayt |
+| `MEMORY_CODING_VERBATIM_FALLBACK_ENABLED` | `false` | Çıkarım sonucu yoksa renderlanmış konuşma working fact olarak kaydedilsin mi |
+| `MEMORY_ENABLE_QUERY_REWRITE` | `false` | Coding kapalı ise default çoklu-query rewrite kontrolü; Coding açık ise çoklu-query her durumda sınıflandırma ve rewrite yapar |
+| `MEMORY_QUERY_REWRITE_MAX_CHARS` | `1000` | default çoklu-query rewrite için karakter koruma limiti |
 
-默认单 query Search 是零 LLM light search。`search_mode=agentic` 下，单 query、多 queries
-都会执行一次合并的场景判断、rewrite 和时间解析。default 多-query 超过长度保护时不做
-rewrite；Coding 开启时只分类，关闭时零 LLM。
+Varsayılan tek query Search sıfır-LLM hafif aramadır. `search_mode=agentic` altında tek veya çoklu query için tek bir birleştirilmiş sahne değerlendirme, rewrite ve zaman çözümlemesi yapılır. Default çoklu-query, uzunluk koruma limitini aşarsa rewrite yapılmaz; Coding açıkken yalnızca sınırlı sahne sınıflandırması yapılır, kapalıyken LLM kullanılmaz.
 
-## System 2 与 User Profile
+## System 2 ve Kullanıcı Profili
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `SWEEPER_ENABLED` | `true` | Ultra evolve 是否执行 cross-domain sweeper |
-| `MEMORY_SUMMARY_ENABLED_IN_SYS2` | `false` | System 2 material 是否包含 L3 Summary |
-| `MEMORY_EVOLING_BALANCED_CATALOG_ENABLED` | `false` | Ultra evolve 是否生成 balanced catalog |
-| `MEMORY_EVOLING_BALANCED_CATALOG_MAX_FACTS` | `120` | 单次最多审阅的 L2 数 |
-| `MEMORY_EVOLING_BALANCED_CATALOG_CONTENT_CHARS` | `180` | Prompt 中每条 L2 的字符上限 |
-| `MEMORY_EVOLING_BALANCED_CATALOG_MAX_TOKENS` | `512` | Catalog 选择输出上限 |
-| `MEMORY_EVOLING_SPECIFIC_SUPPLEMENT_ENABLED` | `false` | Ultra evolve 是否生成 supplement |
-| `MEMORY_USER_PROFILE_BALANCED_CATALOG_ENABLED` | `false` | `get_user_profile()` 是否附加 active catalog |
-| `MEMORY_USER_PROFILE_SPECIFIC_SUPPLEMENT_ENABLED` | `false` | 是否附加 active supplement |
+| `SWEEPER_ENABLED` | `true` | Ultra evolve cross-domain sweeper çalıştırır mı |
+| `MEMORY_SUMMARY_ENABLED_IN_SYS2` | `false` | System 2 materyali L3 Summary içeriyor mu |
+| `MEMORY_EVOLING_BALANCED_CATALOG_ENABLED` | `false` | Ultra evolve balanced catalog üretir mi |
+| `MEMORY_EVOLING_BALANCED_CATALOG_MAX_FACTS` | `120` | Tek seferde incelenecek maksimum L2 sayısı |
+| `MEMORY_EVOLING_BALANCED_CATALOG_CONTENT_CHARS` | `180` | Her L2 için prompt içindeki karakter limiti |
+| `MEMORY_EVOLING_BALANCED_CATALOG_MAX_TOKENS` | `512` | Catalog seçim çıktısı üst sınırı |
+| `MEMORY_EVOLING_SPECIFIC_SUPPLEMENT_ENABLED` | `false` | Ultra evolve supplement üretir mi |
+| `MEMORY_USER_PROFILE_BALANCED_CATALOG_ENABLED` | `false` | `get_user_profile()` active catalog eklesin mi |
+| `MEMORY_USER_PROFILE_SPECIFIC_SUPPLEMENT_ENABLED` | `false` | Active supplement eklensin mi |
 
-Catalog 和 supplement 只由 `user_id` 确定，不作为普通 L6 出现在 Search，也不占
-`schema_limit`。
+Catalog ve supplement yalnızca `user_id` ile belirlenir; normal L6 olarak Search içinde görünmezler ve `schema_limit` içine sayılmazlar.
 
 ### Cross-domain Sweeper
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_CROSS_DOMAIN_ENABLE` | `true` | 是否执行 cross-domain 碰撞扫描 |
-| `MEMORY_CROSS_DOMAIN_MIN_BASICS` | `5` | 进入通用碰撞扫描所需的最低 schema 数 |
-| `MEMORY_CROSS_DOMAIN_BEH_THRESHOLD` | `0.70` | 行为向量相似度阈值 |
-| `MEMORY_CROSS_DOMAIN_CON_THRESHOLD` | `0.60` | 内容向量的跨域差异阈值 |
+| `MEMORY_CROSS_DOMAIN_ENABLE` | `true` | Cross-domain çarpışma taraması çalıştırılsın mı |
+| `MEMORY_CROSS_DOMAIN_MIN_BASICS` | `5` | Genel çarpışma taramasına giriş için gerekli minimum schema sayısı |
+| `MEMORY_CROSS_DOMAIN_BEH_THRESHOLD` | `0.70` | Davranış vektörü benzerlik eşik değeri |
+| `MEMORY_CROSS_DOMAIN_CON_THRESHOLD` | `0.60` | İçerik vektörünün çapraz alan farkı eşik değeri |
 
-## Reader 与本地 Rerank
+## Reader ve Yerel Rerank
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `HY_MEMORY_READER` | `legacy` | `legacy`（向量）/ `hybrid`（向量 + 后端关键词候选） |
-| `MEMORY_HYBRID_V2_VDB_WEIGHT_BM25` | `0.35` | Hybrid BM25 加成权重；当前仍保留旧前缀 |
-| `MEMORY_LOCAL_RERANK_ENABLED` | `false` | 两个 Reader 共用的本地 cross-encoder Rerank |
-| `MEMORY_LOCAL_RERANK_MODEL` | `nreimers/mmarco-mMiniLMv2-L6-H384-v1` | 小型多语言 Hugging Face 模型名或本地路径 |
-| `MEMORY_LOCAL_RERANK_DEVICE` | `auto` | `auto` / `cpu` / `cuda` 等 device |
-| `MEMORY_LOCAL_RERANK_BATCH_SIZE` | `16` | 一次 forward 的 batch，不是请求并发限制 |
-| `MEMORY_LOCAL_RERANK_MAX_LENGTH` | `512` | Tokenizer 最大长度 |
-| `MEMORY_LOCAL_RERANK_POOL_FACTOR` | `3` | 候选池相对最终 limit 的倍数 |
-| `HY_MEMORY_TAG_INDEX_WRITE` | `true` | 是否维护写侧 Tag Index |
+| `HY_MEMORY_READER` | `legacy` | `legacy` (vektör) / `hybrid` (vektör + arka uç keyword adayları) |
+| `MEMORY_HYBRID_V2_VDB_WEIGHT_BM25` | `0.35` | Hybrid BM25 katkı ağırlığı; eski önekin korunduğu yer |
+| `MEMORY_LOCAL_RERANK_ENABLED` | `false` | İki Reader tarafından paylaşılan yerel cross-encoder Rerank |
+| `MEMORY_LOCAL_RERANK_MODEL` | `nreimers/mmarco-mMiniLMv2-L6-H384-v1` | Küçük çok dilli Hugging Face modeli adı veya yerel yol |
+| `MEMORY_LOCAL_RERANK_DEVICE` | `auto` | `auto` / `cpu` / `cuda` gibi cihaz |
+| `MEMORY_LOCAL_RERANK_BATCH_SIZE` | `16` | Tek forward işlemi için batch boyutu, istek eşzamanlılığı değil |
+| `MEMORY_LOCAL_RERANK_MAX_LENGTH` | `512` | Tokenizer maksimum uzunluğu |
+| `MEMORY_LOCAL_RERANK_POOL_FACTOR` | `3` | Aday havuzunun nihai limit ile oranı |
+| `HY_MEMORY_TAG_INDEX_WRITE` | `true` | Yazı tarafı Tag Index bakımını yapılıp yapılmayacağı |
 
-SDK 不设置 Rerank Search 并发上限。开启后模型在 `HyMemoryClient` 初始化阶段加载并
-执行一次预热；初始化失败会直接阻止 Client ready。运行中的单次推理异常仍 fail-open。
-详见 [hy_memory_search_skill.md](hy_memory_search_skill.md)。
+SDK, Rerank Search için eşzamanlılık sınırı belirlemez. Etkinleştirildiğinde model `HyMemoryClient` başlatma aşamasında yüklenir ve bir ısınma forward çalıştırır; başlatma başarısız olursa Client ready durumu doğrudan engellenir. Çalışma sırasında tek bir çıkarımın başarısız olması fail-open davranışına göre sürdürülür.
+Ayrıntılar için [hy_memory_search_skill.md](hy_memory_search_skill.md) dosyasına bakın.
 
-## Episode 与摘要
+## Episode ve Özetler
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_EPISODE_GAP_SECONDS` | `1800` | 超过该间隔时开启新 episode |
-| `MEMORY_EPISODE_MAX_MEMORIES` | `50` | 单 episode 的 user-side 记忆上限 |
-| `MEMORY_EPISODE_SUMMARY_ENABLED` | `false` | Episode 结束时是否生成 L3 Summary |
-| `MEMORY_EPISODE_SUMMARY_MIN_MEMORIES` | `3` | Summary 最低记忆数 |
-| `MEMORY_EPISODE_RECALL_ENABLED` | `false` | Search 是否使用 Episode 关系加权 |
-| `MEMORY_EPISODE_RECALL_WEIGHT` | `0.7` | Episode 结构支持权重 |
-| `MEMORY_TOPIC_SUMMARY_ENABLED` | `false` | 是否生成 Topic Summary |
-| `MEMORY_TOPIC_SUMMARY_MIN_MEMORIES` | `5` | Topic Summary 最低记忆数 |
-| `MEMORY_TOPIC_SUMMARY_STEP` | `5` | Topic 新增多少条后重新生成 Summary |
-| `MEMORY_SESSION_EPISODE_ENABLED` | `false` | 是否允许 `finalize_session()` 归档指定 session |
-| `MEMORY_SESSION_EPISODE_CONTEXT_ENABLED` | `false` | Reader 是否召回 Session Episode 上下文 |
-| `MEMORY_SESSION_EPISODE_LIMIT` | `5` | Session Episode 候选上限 |
-| `MEMORY_SESSION_EPISODE_FACT_LIMIT` | `2` | 每个 Session Episode 附带事实数 |
+| `MEMORY_EPISODE_GAP_SECONDS` | `1800` | Bu aralığı aşan sürelerde yeni episode başlatılır |
+| `MEMORY_EPISODE_MAX_MEMORIES` | `50` | Tek episode için maksimum kullanıcı tarafı hafıza sayısı |
+| `MEMORY_EPISODE_SUMMARY_ENABLED` | `false` | Episode sona erdiğinde L3 Summary üretilsin mi |
+| `MEMORY_EPISODE_SUMMARY_MIN_MEMORIES` | `3` | Summary için minimum hafıza sayısı |
+| `MEMORY_EPISODE_RECALL_ENABLED` | `false` | Search, Episode ilişkilerini ağırlıklandıracak mı |
+| `MEMORY_EPISODE_RECALL_WEIGHT` | `0.7` | Episode yapısının destek ağırlığı |
+| `MEMORY_TOPIC_SUMMARY_ENABLED` | `false` | Topic Summary üretilecek mi |
+| `MEMORY_TOPIC_SUMMARY_MIN_MEMORIES` | `5` | Topic Summary için minimum hafıza sayısı |
+| `MEMORY_TOPIC_SUMMARY_STEP` | `5` | Summary yeniden oluşturulmadan önce kaç hafıza eklenecek |
+| `MEMORY_SESSION_EPISODE_ENABLED` | `false` | `finalize_session()` ile belirli bir session arşivlenebilsin mi |
+| `MEMORY_SESSION_EPISODE_CONTEXT_ENABLED` | `false` | Reader Session Episode bağlamı geri çağırsın mı |
+| `MEMORY_SESSION_EPISODE_LIMIT` | `5` | Session Episode aday limiti |
+| `MEMORY_SESSION_EPISODE_FACT_LIMIT` | `2` | Her Session Episode için eklenebilecek gerçek sayısı |
 
-## Recall 辅助能力
+## Recall Yardımcı Yetenekler
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_RECALL_STRENGTH_ENABLED` | `false` | 是否按访问次数和闲置时长重排 normal 结果 |
-| `MEMORY_RECALL_STRENGTH_TAU` | `180` | 衰减时间常数，天 |
-| `MEMORY_RECALL_ACCESS_TRACKING` | `true` | Strength 开启时是否回写访问信息 |
-| `MEMORY_ENTITY_STORE_ENABLED` | `false` | 是否维护独立 entity collection；当前 Reader 不直接读取 |
+| `MEMORY_RECALL_STRENGTH_ENABLED` | `false` | Erişim sayısına ve boşta kalma süresine göre normal sonuçlar yeniden sıralansın mı |
+| `MEMORY_RECALL_STRENGTH_TAU` | `180` | Bozulan zaman sabiti, gün |
+| `MEMORY_RECALL_ACCESS_TRACKING` | `true` | Strength açıkken erişim bilgileri tekrar yazılsın mı |
+| `MEMORY_ENTITY_STORE_ENABLED` | `false` | Ayrı entity collection sürdürülür mü; mevcut Reader doğrudan okuma yapmaz |
 
-旧数据可调用当前公开方法 `client.build_entity_store(user_id)` 补建 Entity Store。
+Eski veriler için mevcut açık yöntem `client.build_entity_store(user_id)` çağrılarak Entity Store yeniden oluşturulabilir.
 
-## 日志、Trace 与历史
+## Loglar, Trace ve Geçmiş
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `MEMORY_LOG_LEVEL` | `INFO` | 运行日志级别 |
+| `MEMORY_LOG_LEVEL` | `INFO` | Çalışma log seviyesi |
 | `MEMORY_LOG_FORMAT` | `text` | `text` / `json` |
-| `MEMORY_LOG_DIR` | — | 统一日志根目录 |
-| `MEMORY_TRACE_LOG_DIR` | — | JSONL 日志目录的兼容旧名；优先使用 `MEMORY_LOG_DIR` |
-| `MEMORY_PIPELINE_LOG_ENABLED` | `true` | 是否写 pipeline JSONL 日志（`{MEMORY_LOG_DIR}/<subdir>/<date>.log`）；`false` 完全不写 |
-| `MEMORY_PIPELINE_TRACE_ENABLED` | `true` | 是否写入 cache 的 pipeline trace 表 |
-| `MEMORY_MEMORY_OPERATIONS_ENABLED` | `false` | 是否写入 memory operation 审计记录 |
-| `MEMORY_HISTORY_ENABLE` | `true` | 是否启用历史记录 |
-| `MEMORY_HISTORY_DB_PATH` | `{DATA_DIR}/data/history.db` | History SQLite 路径 |
-| `MEMORY_HISTORY_RECORD_SEARCHES` | `false` | 是否记录 Search 操作 |
-| `MEMORY_CODING_CHAIN_REPO_ROOT` | — | coding 版本链读取本地 Git diff 的仓库根目录 |
-| `MEMORY_CODING_CHAIN_BLOCK_ENABLED` | `false` | search(scene=coding) 是否注入版本演进链块（diff / `chain_block`）；默认关 |
+| `MEMORY_LOG_DIR` | — | Birleşik günlük kökü |
+| `MEMORY_TRACE_LOG_DIR` | — | JSONL log dizini için eski isim; öncelik `MEMORY_LOG_DIR`'e verilir |
+| `MEMORY_PIPELINE_LOG_ENABLED` | `true` | Pipeline JSONL günlük yazılsın mı (`{MEMORY_LOG_DIR}/<subdir>/<date>.log`); `false` ise tamamen yazma olmaz |
+| `MEMORY_PIPELINE_TRACE_ENABLED` | `true` | Cache içindeki pipeline trace tablosuna yazılsın mı |
+| `MEMORY_MEMORY_OPERATIONS_ENABLED` | `false` | Hafıza operasyon denetim kaydı yazılsın mı |
+| `MEMORY_HISTORY_ENABLE` | `true` | Geçmiş kaydı açık mı |
+| `MEMORY_HISTORY_DB_PATH` | `{DATA_DIR}/data/history.db` | History SQLite yolu |
+| `MEMORY_HISTORY_RECORD_SEARCHES` | `false` | Search işlemleri kaydedilsin mi |
+| `MEMORY_CODING_CHAIN_REPO_ROOT` | — | coding sürüm zinciri için yerel Git diff ve repo kökü |
+| `MEMORY_CODING_CHAIN_BLOCK_ENABLED` | `false` | search(scene=coding) sürüm evrim zinciri bloğu (`chain_block` / diff) eklesin mi; varsayılan kapalı |
 
-## HTTP Server
+## HTTP Sunucusu
 
-| 变量 | 默认值 | 说明 |
+| Değişken | Varsayılan | Açıklama |
 |---|---|---|
-| `HY_MEMORY_SERVER_HOST` | `127.0.0.1` | Server 监听地址 |
-| `HY_MEMORY_SERVER_PORT` | `19527` | Server 监听端口 |
+| `HY_MEMORY_SERVER_HOST` | `127.0.0.1` | Sunucu dinleme adresi |
+| `HY_MEMORY_SERVER_PORT` | `19527` | Sunucu dinleme portu |
 
-历史配置不会生效；当前支持项以本页表格和 `.env.example` 为准。Cache backend 当前仅支持
-`sqlite` 和 `mysql`。
+Geçmiş konfigürasyonlar etkili olmaz; geçerli seçenekler bu sayfadaki tablolar ve `.env.example` dosyası ile belirlenir. Cache backend şu an yalnızca `sqlite` ve `mysql` destekler.
 

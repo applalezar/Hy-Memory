@@ -1,34 +1,30 @@
-# Graph Memory Architecture and Operations
+# Graph Hafıza Mimarisi ve İşlemleri
 
-This document describes the Graph features implemented by the current SDK.
-It is intended for operators enabling Graph and maintainers working on
-`pipelines/_graph`, `reader_base.py`, or a GraphStore backend.
+Bu belge mevcut SDK tarafından uygulanan Graph özelliklerini açıklar.
+Bu belge, Graph'i etkinleştiren operatörler ve `pipelines/_graph`, `reader_base.py` veya bir GraphStore arka ucu üzerinde çalışan geliştiriciler için tasarlanmıştır.
 
-Graph is an optional, fail-open enhancement. Vector retrieval remains the
-source of truth: if Graph is unavailable, incomplete, or disabled, normal
-memory search must continue to work.
+Graph isteğe bağlı, fail-open bir geliştirmedir. Vektör geri çağrısı asıl kaynak olmayı sürdürür: Graph kullanılamıyorsa, eksikse veya kapalıysa normal hafıza araması çalışmaya devam etmelidir.
 
-## 1. Enabling Graph
+## 1. Graph'i etkinleştirme
 
-Graph availability depends on the processing mode:
+Graph kullanılabilirliği işleme moduna göre değişir:
 
-| Mode | Graph behavior |
+| Mod | Graph davranışı |
 |---|---|
-| `lite` | Disabled |
-| `pro` | Controlled by `MEMORY_ENABLE_GRAPH`, default `false` |
-| `ultra` | Enabled |
+| `lite` | Devre dışı |
+| `pro` | `MEMORY_ENABLE_GRAPH` ile kontrol edilir, varsayılan `false` |
+| `ultra` | Etkin |
 
-The default backend is embedded Kuzu. Neo4j is available through the `graph`
-optional dependency.
+Varsayılan arka uç gömülü Kuzu'dur. Neo4j `graph` opsiyonel bağımlılığı ile kullanılabilir.
 
 ```bash
-# Embedded, single-process deployment
+# Gömülü, tek işlemli dağıtım
 MEMORY_MODE=pro
 MEMORY_ENABLE_GRAPH=true
 MEMORY_GRAPH_PROVIDER=kuzu
 MEMORY_GRAPH_DB_PATH=/data/hy-memory/kuzu
 
-# Multi-process or remote deployment
+# Çok işlemli veya uzak dağıtım
 MEMORY_GRAPH_PROVIDER=neo4j
 NEO4J_URL=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
@@ -36,87 +32,71 @@ NEO4J_PASSWORD=secret
 NEO4J_DATABASE=neo4j
 ```
 
-Kuzu permits only one process to open a database path. Use Neo4j when several
-workers must share the same Graph.
+Kuzu, aynı veritabanı yolunu birden fazla işlem tarafından açmaya izin vermez. Birden çok işçinin aynı Graph'i paylaşması gerekiyorsa Neo4j kullanın.
 
-## 2. Write-side projection
+## 2. Yazı tarafı projeksiyon
 
-When Graph and `MEMORY_GRAPH_WRITE` are enabled, persisted L2 facts are
-projected into Graph asynchronously. Projection failures are logged and do not
-roll back the VDB write.
+Graph ve `MEMORY_GRAPH_WRITE` açıkken, kalıcı L2 gerçeği Graph'e asenkron şekilde yansıtılır. Projeksiyon hataları loglanır ve VDB yazımını geri almaz.
 
-### 2.1 Node model
+### 2.1 Düğüm modeli
 
-An L2 fact is represented as `Memory(layer="l2_fact")`, not as `VdbRef`.
-This allows the node to participate in Topic, Entity, relation, and temporal
-edges. `VdbRef` remains the lightweight target used by L6 `DERIVED_FROM`
-evidence links.
+Bir L2 gerçeği `Memory(layer="l2_fact")` olarak temsil edilir; `VdbRef` değil. Bu sayede düğüm Topic, Entity, ilişki ve zamansal kenarlara katılabilir. `VdbRef`, L6 `DERIVED_FROM` kanıt bağlantılarında kullanılan hafif hedef olarak kalır.
 
-Graph projection does not replace the VDB. Content, vectors, event time, and
-normal retrieval remain VDB-owned.
+Graph projeksiyonu VDB'yi değiştirmez. İçerik, vektörler, olay zamanı ve normal geri çağrı VDB sahibi olur.
 
-### 2.2 Edge sources
+### 2.2 Kenar kaynakları
 
-Current relation sources are:
+Mevcut ilişki kaynakları şunlardır:
 
-| Relation | Source | Additional LLM call |
+| İlişki | Kaynak | Ek LLM çağrısı |
 |---|---|---|
-| `co_occurs` | L2 facts created in one write batch | No |
-| `semantic_neighbor` | Reconcile candidates above `MEMORY_GRAPH_EDGE_MIN_SCORE` | No |
-| `causes` | Reconcile `related` output | No additional call |
-| `elaborates` | Reconcile `related` output | No additional call |
-| `contrasts` | Reconcile `related` output | No additional call |
-| `same_series` | Reconcile `related` output | No additional call |
-| `TAGGED_WITH` | Memory tags projected to Topic nodes | No new memory LLM call |
-| `MENTIONS` | NER entities projected to Entity nodes | No |
-| `TEMPORAL_NEXT` | Optional event-time ordering | No |
+| `co_occurs` | Tek yazım topluluğunda oluşturulan L2 gerçekler | Hayır |
+| `semantic_neighbor` | `MEMORY_GRAPH_EDGE_MIN_SCORE` üzerindeki Reconcile adayları | Hayır |
+| `causes` | Reconcile `related` çıktısı | Ek çağrı yok |
+| `elaborates` | Reconcile `related` çıktısı | Ek çağrı yok |
+| `contrasts` | Reconcile `related` çıktısı | Ek çağrı yok |
+| `same_series` | Reconcile `related` çıktısı | Ek çağrı yok |
+| `TAGGED_WITH` | Topic düğümlerine yansıtılan hafıza etiketleri | Yeni hafıza LLM çağrısı değil |
+| `MENTIONS` | Entity düğümlerine yansıtılan NER varlıklar | Hayır |
+| `TEMPORAL_NEXT` | İsteğe bağlı olay-zaman sıralaması | Hayır |
 
-`co_occurs` is bounded by `MEMORY_GRAPH_CO_OCCURS_MAX_BATCH` to prevent an
-O(n²) edge explosion. `semantic_neighbor` is inexpensive but mostly repeats
-information already present in vector similarity; typed and co-occurrence
-relations usually carry more structural information.
+`co_occurs`, O(n²) edge patlamasını önlemek için `MEMORY_GRAPH_CO_OCCURS_MAX_BATCH` ile sınırlandırılır. `semantic_neighbor` ucuzdur ama çoğunlukla vektör benzerlikte zaten mevcut bilginin tekrarıdır; yazılı ve eşzamanlı ilişkiler genelde daha yapısal bilgi taşır.
 
-### 2.3 Lifecycle synchronization
+### 2.3 Yaşam döngüsü senkronizasyonu
 
-Graph state follows memory lifecycle changes:
+Graph durumu artık hafızanın yaşam döngüsü değişikliklerine göre takip edilir:
 
-- ADD projects the new active fact and its edges.
-- UPDATE refreshes the projected node.
-- SUPERSEDE and SHADOW retire the old projection from active retrieval.
-- Search filters inactive or shadowed nodes even if stale edges remain.
+- ADD yeni aktif gerçeği ve kenarlarını projelendirir.
+- UPDATE projelendirilmiş düğümü yeniler.
+- SUPERSEDE ve SHADOW eski projeksiyonu aktif geri çağrıdan kaldırır.
+- Search eski veya shadowlanmış düğümleri, hatta eski kenarlar kalmış olsa bile filtreler.
 
-Projection code lives in `hy_memory/pipelines/_graph/projector.py` and is
-scheduled from `hy_memory/pipelines/writer.py`.
+Projeksiyon kodu `hy_memory/pipelines/_graph/projector.py` içinde bulunur ve `hy_memory/pipelines/writer.py` üzerinden planlanır.
 
-## 3. Read-side Graph usage
+## 3. Okuma tarafı Graph kullanımı
 
-`legacy` and `hybrid` readers share the same Graph post-processing. The readers
-differ only in candidate recall: `legacy` uses dense vectors; `hybrid` adds the
-keyword/BM25 channel.
+`legacy` ve `hybrid` reader'lar aynı Graph post-processing'i paylaşır. Reader'lar yalnızca aday geri çağrısında farklıdır: `legacy` yoğun vektör kullanır; `hybrid` ek olarak keyword/BM25 kanalını ekler.
 
-Enable Graph post-processing with:
+Graph post-processing'i şu şekilde etkinleştirin:
 
 ```bash
 MEMORY_GRAPH_RERANK_ENABLED=true
 ```
 
-All Graph operations are fail-open. Exceptions return the pre-Graph candidate
-order unless a test explicitly requests strict behavior.
+Tüm Graph işlemleri fail-open davranır. İstisnalar Graph öncesi aday sırasını döndürür; kesin davranış isteği olmayan testlerde bu durum geçerlidir.
 
 ### 3.1 A — Support propagation
 
-Support propagation reranks candidates already present in the expanded recall
-pool. It never adds a new candidate.
+Support propagation, genişletilmiş geri çağrı havuzunda zaten bulunan adayları yeniden sıralar. Yeni aday eklemez.
 
-For candidate `v`, the implementation computes bounded support from recalled
-neighbors and applies a small score adjustment:
+Aday `v` için uygulama, geri çağrılan komşulardan sınırlı destek hesaplar ve küçük bir skor ayarlaması uygular:
 
 ```text
 support(v) = sum(edge_prior(u,v) * score(u)) / sqrt(pool_degree(v))
 score'(v)  = score(v) + beta * min(support(v), support_cap)
 ```
 
-Relevant settings:
+İlgili ayarlar:
 
 ```bash
 MEMORY_GRAPH_PROPAGATE_BETA=0.15
@@ -124,22 +104,20 @@ MEMORY_GRAPH_PROPAGATE_ITERS=1
 MEMORY_GRAPH_SUPPORT_CAP=1.0
 ```
 
-### 3.2 B — Bounded relation expansion
+### 3.2 B — Sınırlı ilişki genişletme
 
-Relation expansion may nominate nodes outside the initial pool. Admission is
-bounded by all of the following:
+İlişki genişletme, başlangıç havuzunun dışında düğümler önerilebilir. Kabul, aşağıdakilerin tümüyle sınırlandırılır:
 
-- traversal hop limit;
+- traversal hop limiti;
 - seed score floor;
-- prefilter and expansion limits;
-- relation-type quota;
-- semantic hard gate `sim(candidate) >= sim(seed) - delta`;
-- final multi-channel scoring.
+- prefilter ve expansion limitleri;
+- ilişki tipi kotası;
+- semantik Sert kapı `sim(candidate) >= sim(seed) - delta`;
+- nihai çok kanallı puanlama.
 
-Admitted items are merged into a seed by default, so they do not consume an
-extra top-k slot.
+Kabul edilen öğeler varsayılan olarak seed'e birleştirilir; bu yüzden ekstra top-k slotu tüketmezler.
 
-Core settings and current defaults:
+Temel ayarlar ve mevcut varsayılanlar:
 
 ```bash
 MEMORY_GRAPH_RELAX_GAMMA=0.3
@@ -151,33 +129,28 @@ MEMORY_GRAPH_SEED_SIM_DELTA=0.2
 MEMORY_GRAPH_EXPAND_MERGE_SEED=true
 ```
 
-Set `MEMORY_GRAPH_RELAX_GAMMA=0` to disable relation expansion while retaining
-support propagation and relation paths.
+`MEMORY_GRAPH_RELAX_GAMMA=0` olarak ayarlarsanız support propagation ve relation paths korunurken ilişki genişletme kapatılır.
 
 ### 3.3 C — Relation paths
 
-Relation paths preserve connection semantics that would be lost in a flat
-memory list. The shared reader stores them independently from normal memories
-in its diagnostic `ReadResponse.extra["related_paths"]` field:
+Relation paths, düz hafıza listesinde kaybolacak bağlantı anlamsal değerlerini korur. Paylaşılan reader bunları normal hafızalardan bağımsız şekilde tanılayıcı `ReadResponse.extra["related_paths"]` alanında saklar:
 
 ```python
 read_response.extra["related_paths"]
 ```
 
-Each path contains the ordered nodes and relation types. Temporal edges also
-include direction (`earlier -> later`).
+Her yol, sıralı düğümleri ve ilişki tiplerini içerir. Zamansal kenarlar ayrıca yönü de taşır (`earlier -> later`).
 
 ```bash
 MEMORY_GRAPH_PATH_ENABLED=true
 MEMORY_GRAPH_PATH_HIGH_FLOOR=0.5
 ```
 
-### 3.4 Relation-type priors
+### 3.4 İlişki tipi öncelikleri
 
-The reader weights an edge by both its stored weight and a relation-type prior.
-Current priors are defined in `pipelines/_graph/rerank.py`:
+Reader, kenarı hem depolanan ağırlığına hem de ilişki tipi önceliğine göre ağırlıklandırır. Mevcut öncelikler `pipelines/_graph/rerank.py` içinde tanımlanmıştır:
 
-| Relation | Prior |
+| İlişki | Öncelik |
 |---|---:|
 | `causes` | 0.90 |
 | `elaborates` | 0.90 |
@@ -186,21 +159,16 @@ Current priors are defined in `pipelines/_graph/rerank.py`:
 | `temporal_next` | 0.70 |
 | `co_occurs` | 0.55 |
 | `episode` | 0.55 |
-| untyped `related` | 0.50 |
+| türsiz `related` | 0.50 |
 | `semantic_neighbor` | 0.35 |
 
-Higher priors are reserved for relations that provide information not already
-encoded by vector similarity. The degree normalization and support cap prevent
-high-degree nodes from dominating ranking.
+Daha yüksek öncelikler, vektör benzerliğiyle zaten kodlanmamış bilgiyi sağlayan ilişkilere ayrılmıştır. Derece normalize etme ve support cap, yüksek dereceli düğümlerin sıralamaya domine etmesini engeller.
 
-## 4. Temporal edges and episodes
+## 4. Zamansal kenarlar ve episode'lar
 
-`MEMORY_GRAPH_TEMPORAL_SPINE=true` creates directed `TEMPORAL_NEXT` edges using
-VDB `memory_at` values. Graph nodes do not own canonical event time; projection
-resolves timestamps from VDB before building the spine.
+`MEMORY_GRAPH_TEMPORAL_SPINE=true`, VDB `memory_at` değerlerini kullanarak yönlü `TEMPORAL_NEXT` kenarları oluşturur. Graph düğümleri kanonik olay zamanına sahip değildir; projeksiyon, spine oluşturulurken zaman damgalarını VDB'den çözer.
 
-Episodes are separate from Graph. `episode_id` groups memories belonging to one
-discussion and can provide bounded candidate support even when Graph is off.
+Episode'lar Graph'ten ayrı çalışır. `episode_id`, tek bir diyalogu oluşturan hafızaları bir araya getirir ve Graph kapalıyken bile sınırlı aday desteği sağlayabilir.
 
 ```bash
 MEMORY_EPISODE_RECALL_ENABLED=false
@@ -208,62 +176,56 @@ MEMORY_EPISODE_RECALL_WEIGHT=0.7
 MEMORY_EPISODE_SUMMARY_ENABLED=false
 ```
 
-Detailed Episode and summary settings are listed in `docs/env_reference.md`.
+Ayrıntılı Episode ve özet ayarları `docs/env_reference.md` içinde listelenmiştir.
 
-## 5. Backfill and rebuild
+## 5. Backfill ve yeniden inşa
 
-Existing VDB facts can be projected with:
+Mevcut VDB gerçekleri şu şekilde projeksiyona sokulabilir:
 
 ```python
 client.build_memory_graph(
     user_id="u1",
-    agent_id=None,      # None means all agents for the user
+    agent_id=None,      # None tüm agent'ları temsil eder
     clear_first=False,
 )
 ```
 
-Backfill can reconstruct:
+Backfill şunları yeniden inşa edebilir:
 
-- L2 Memory nodes;
-- Topic and Entity projections;
-- `semantic_neighbor` edges from stored vectors;
-- optional `TEMPORAL_NEXT` edges.
+- L2 Memory düğümleri;
+- Topic ve Entity projeksiyonları;
+- depolanmış vektörlerden `semantic_neighbor` kenarları;
+- isteğe bağlı `TEMPORAL_NEXT` kenarlar.
 
-Backfill cannot reconstruct batch `co_occurs` edges or LLM typed relations,
-because the original write-batch and reconcile decisions are not recoverable.
+Backfill, toplu `co_occurs` kenarlarını veya LLM tipli ilişkileri yeniden oluşturamaz; çünkü orijinal yazım topluluğu ve reconcile kararları kurtarılamaz.
 
-Use `clear_first=True` after changing projection rules. It clears the selected
-L2 projection and orphaned Topic/Entity nodes without deleting System 2 L6
-schemas.
+Projeksiyon kurallarını değiştirdikten sonra `clear_first=True` kullanın. Bu, seçili L2 projeksiyonunu ve erişimsiz Topic/Entity düğümlerini temizler; ancak System 2 L6 schema'larını silmez.
 
-## 6. Observability
+## 6. Gözlemlenebilirlik
 
-The shared reader records internal diagnostics in:
+Paylaşılan reader dahili tanılama bilgilerini şu alanlarda saklar:
 
 ```python
-read_response.extra["graph_rerank"]   # edge, propagation, and admission stats
-read_response.extra["related_paths"]  # decorated relation paths
+read_response.extra["graph_rerank"]   # kenar, propagation ve kabul istatistikleri
+read_response.extra["related_paths"]  # dekore edilmiş ilişki yolları
 ```
 
-`HyMemoryClient.search()` does not currently forward these two internal fields.
-For public operational visibility, use pipeline traces: read-side Graph work is
-recorded as `READ_GRAPH_RERANK`, while write projection reports `GRAPH_PROJECT`
-statistics and errors.
+`HyMemoryClient.search()` şu anda bu iki dahili alanı dışarıya iletmez.
+Kamuya açık operasyonel görünürlük için pipeline trace'leri kullanın: read-side Graph işi `READ_GRAPH_RERANK` olarak kaydedilir; yazma projeksiyonu ise `GRAPH_PROJECT` istatistikleri ve hataları raporlar.
 
-## 7. Implementation map
+## 7. Uygulama haritası
 
-| Responsibility | Module |
+| Sorumluluk | Modül |
 |---|---|
-| Projection and lifecycle synchronization | `hy_memory/pipelines/_graph/projector.py` |
+| Projeksiyon ve yaşam döngüsü senkronizasyonu | `hy_memory/pipelines/_graph/projector.py` |
 | Support, expansion, paths, priors | `hy_memory/pipelines/_graph/rerank.py` |
-| Reader integration | `hy_memory/pipelines/reader_base.py` |
-| Write scheduling | `hy_memory/pipelines/writer.py` |
-| Relation output parsing | `hy_memory/agent/reconciler.py` |
-| GraphStore interface | `hy_memory/data/graph_store_base.py` |
-| Kuzu backend | `hy_memory/data/graph_store_kuzu.py` |
-| Neo4j backend | `hy_memory/data/graph_store_neo4j.py` |
+| Reader entegrasyonu | `hy_memory/pipelines/reader_base.py` |
+| Yazma planlaması | `hy_memory/pipelines/writer.py` |
+| İlişki çıktısı ayrıştırma | `hy_memory/agent/reconciler.py` |
+| GraphStore arayüzü | `hy_memory/data/graph_store_base.py` |
+| Kuzu arka ucu | `hy_memory/data/graph_store_kuzu.py` |
+| Neo4j arka ucu | `hy_memory/data/graph_store_neo4j.py` |
 | Graph backfill API | `HyMemoryClient.build_memory_graph()` |
 
-Tests covering these contracts live primarily in `tests/test_memory_graph.py`,
-`tests/test_graph_edge_idempotency.py`, and `tests/test_profile_evidence.py`.
+Bu sözleşmeleri kapsayan testler öncelikle `tests/test_memory_graph.py`, `tests/test_graph_edge_idempotency.py` ve `tests/test_profile_evidence.py` dosyalarında yer alır.
 
