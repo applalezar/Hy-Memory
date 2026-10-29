@@ -19,9 +19,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4c6ef5?style=flat-square" alt="Apache-2.0 License"></a>
 </p>
 
-English | [中文](README.zh.md) | [Türkçe](README.md)
+[English](readme_en.md) | [Türkçe](README.md) | 中文
 
-**[Hy Memory](https://memory.hunyuan.tencent.com/)** ([Official Website](https://memory.hunyuan.tencent.com/)) is a production-grade dual-system cognitive memory engine and Python SDK (`hy-memory`) for self-evolving LLM agents. It unifies personal memory, coding memory, and working-memory flows into one memory infrastructure.
+**[Hy Memory](https://memory.hunyuan.tencent.com/)** ([Official Website](https://memory.hunyuan.tencent.com/)) is a production-grade dual-system cognitive memory engine and Python SDK (`hy-memory`) for self-evolving LLM agents.
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/94405890-8429-47c2-9084-38f7ed9f126f" controls width="640"></video>
