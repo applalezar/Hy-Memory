@@ -113,7 +113,7 @@ client.add([
 ], user_id="user_1")
 
 # Arama: profile / normal / proactive kanallarını döndürür
-results = client.search("Kullanıcının hangi filmlerini sevdiğini sor", user_ids=["user_1"], limit=10)
+results = client.search("Kullanıcının hangi filmleri sevdiğini sor", user_ids=["user_1"], limit=10)
 for mem in results["memories"]["normal"]:
     print(f"  [{mem['score']:.2f}] {mem['content']}")
 
@@ -256,7 +256,7 @@ Coding, Working ile **aynı iki katmanlı pipeline ve veri şemasını** kullan�
 - [Graph hafıza tasarımı](docs_tr/pro_graph_design.md) — grafik projeksiyonu, rerank, ilişki yolları ve dağıtım sınırları
 - [Çevre değişkeni şablonu](.env.example) — doğrudan kopyalanabilir yapılandırma şablonu
 - [MemHub README](memhub/README.md) — yerel öncelikli masaüstü ve CLI ürün özeti, çalışma zamanı komutları ve gizlilik sınırları
-- [Hermes native memory provider](plugins/hermes/README.md) — açık sahiple/agent alan ayrımı; ayrı HTTP servis; otomatik yakalama ve hatırlama isteğe bağlıdır.
+- [Hermes yerel hafıza sağlayıcısı](plugins/hermes/README.md) — açık sahiple/agent alan ayrımı; ayrı HTTP servis; otomatik yakalama ve hatırlama isteğe bağlıdır.
 - [OpenClaw eklentisi](plugins/openclaw/README.md) — `plugins/` altında agent entegrasyonları (özet: [plugins/README.md](plugins/README.md))
 
 ### Lisans
