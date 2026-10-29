@@ -4,80 +4,80 @@
 
 <h1 align="center">Hy Memory</h1>
 
-<p align="center">工业级双系统认知记忆框架，为 LLM Agent 提供类人长期记忆能力。</p>
+<p align="center">Üretim seviyesinde, LLM ajanları için ikili sistem bilişsel hafıza.</p>
 
 <p align="center">
-  <a href="#最新动态"><img src="https://img.shields.io/badge/news-latest-e65100?style=flat-square" alt="最新动态"></a>
-  <a href="#论文"><img src="https://img.shields.io/badge/papers-research-68448b?style=flat-square" alt="论文"></a>
-  <a href="#快速开始"><img src="https://img.shields.io/badge/get_started-quickstart-149954?style=flat-square" alt="快速开始"></a>
-  <a href="#架构设计"><img src="https://img.shields.io/badge/architecture-overview-007ec6?style=flat-square" alt="架构设计"></a>
-  <a href="#支持"><img src="https://img.shields.io/badge/support-docs-00897b?style=flat-square" alt="支持"></a>
-  <a href="https://huggingface.co/tencent/Hy-Memory-30B-A3B"><img src="https://img.shields.io/badge/model-Hugging%20Face-ffd21e?style=flat-square" alt="Hugging Face 模型"></a>
+  <a href="#son-haberler"><img src="https://img.shields.io/badge/news-latest-e65100?style=flat-square" alt="Son Haberler"></a>
+  <a href="#makaleler"><img src="https://img.shields.io/badge/papers-research-68448b?style=flat-square" alt="Makaleler"></a>
+  <a href="#hizli-baslangic"><img src="https://img.shields.io/badge/get_started-quickstart-149954?style=flat-square" alt="Hızlı Başlangıç"></a>
+  <a href="#sistem-mimarisi"><img src="https://img.shields.io/badge/architecture-overview-007ec6?style=flat-square" alt="Sistem Mimarisi"></a>
+  <a href="#destek"><img src="https://img.shields.io/badge/support-docs-00897b?style=flat-square" alt="Destek"></a>
+  <a href="https://huggingface.co/tencent/Hy-Memory-30B-A3B"><img src="https://img.shields.io/badge/model-Hugging%20Face-ffd21e?style=flat-square" alt="Hugging Face Model"></a>
   <a href="memhub/README.md"><img src="https://img.shields.io/badge/MemHub-README-f28c45?style=flat-square" alt="MemHub"></a>
-  <a href="https://memory.hunyuan.tencent.com/"><img src="https://img.shields.io/badge/website-Hy%20Memory-0052d9?style=flat-square" alt="官网"></a>
+  <a href="https://memory.hunyuan.tencent.com/"><img src="https://img.shields.io/badge/website-Hy%20Memory-0052d9?style=flat-square" alt="Website"></a>
   <a href="https://discord.gg/x56wEb2PX"><img src="https://img.shields.io/badge/Discord-memory%20channel-5865f2?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4c6ef5?style=flat-square" alt="Apache-2.0 许可证"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-4c6ef5?style=flat-square" alt="Apache-2.0 Lisansı"></a>
 </p>
 
-[English](readme_en.md) | [Türkçe](README.md) | 中文
+[English](readme_en.md) | Türkçe | [中文](README.zh.md)
 
-**[Hy Memory](https://memory.hunyuan.tencent.com/)**（官网：[memory.hunyuan.tencent.com](https://memory.hunyuan.tencent.com/)）是面向自演化 LLM Agent 的工业级双系统认知记忆框架与 Python SDK（`hy-memory`）。
+**[Hy Memory](https://memory.hunyuan.tencent.com/)** ([Resmî Web Sitesi](https://memory.hunyuan.tencent.com/)) üretim seviyesinde, LLM ajanları için ikili sistem bilişsel hafıza motoru ve Python SDK'sidir (`hy-memory`). Kişisel hafıza, çalışma hafızası ve kodlama hafızasını tek bir bellek altyapısında birleştirir.
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/94405890-8429-47c2-9084-38f7ed9f126f" controls width="640"></video>
-  <p><b>MemHub 演示视频</b></p>
+  <p><b>MemHub Demo Videosu</b></p>
 </div>
 
 ---
 
-## 最新动态
+## Son Haberler
 
-* *<mark>[new]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **模型开源** 在 Hugging Face 发布 **Hy-Memory-30B-A3B** 的 **FP8**（**[Hy-Memory-30B-A3B-FP8](https://huggingface.co/tencent/Hy-Memory-30B-A3B-FP8)**）和 **GGUF**（**[Hy-Memory-30B-A3B-GGUF](https://huggingface.co/tencent/Hy-Memory-30B-A3B-GGUF)**）。
-* *<mark>[new]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **正式发布 [MemHub v1.0.5](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.5)**：支持中文、英文和西班牙语界面。
-* *<mark>[new]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **正式发布 [MemHub v1.0.4](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.4)** 与 **[memhub-cli 1.0.5](https://www.npmjs.com/package/memhub-cli)**。
-* *<mark>[new]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **正式发布** **Hy Memory 2.0 (`hy-memory==2.0.4`)**（已上线 [PyPI](https://pypi.org/project/hy-memory/2.0.4/)），并开源 **Hy-Memory** 项目。
-* *<mark>[new]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **模型开源** 在 Hugging Face 发布 **[Hy-Memory-30B-A3B](https://huggingface.co/tencent/Hy-Memory-30B-A3B)** 长期记忆写入模型与技术报告。
-* *<mark>[new]</mark>* 🔥🔥 **[2026-09]**: 📊 **基准与方法发布** 推出长周期与交错式编程记忆评测基准 **[CMB: A Coding Memory Benchmark for Long-Horizon and Interleaved Coding Agents](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf)**。
-* *<mark>[new]</mark>* 🔥🔥 **[2026-08]**: 🎉 **论文录用** 双系统认知记忆架构论文 **[Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents](https://arxiv.org/abs/2606.09483)**（**EMNLP 2026**）。
-* 🔥 **[2026-05]**: 🌟 **初代发布** 正式发布第一代认知记忆框架 **[Hy Memory 1.0](https://mp.weixin.qq.com/s/dH5PGpxqArFZkSq3-QxWYA)**。
-
----
-
-## 论文
-
-欢迎了解 **Hy Memory 记忆研究体系**，涵盖对话认知记忆、长周期编程记忆以及强化学习记忆写入模型：
-
-> [**Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents**](https://arxiv.org/abs/2606.09483) *（**EMNLP 2026** 已接收）*  
-> **TL;DR:** 提出面向 **Chat** 的双系统（System 1 + System 2）认知记忆架构，将个人长期记忆组织为 8 层认知结构（原始对话、原子事实、摘要、身份、知识、心智图谱和意图）。  
-> 📄 Paper: https://arxiv.org/abs/2606.09483
-
-> [**CMB: A Coding Memory Benchmark for Long-Horizon and Interleaved Coding Agents**](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf) *（**ICLR 2027** 待提交）*  
-> **TL;DR:** 提出面向长周期与交错式 **Coding** Agent 的记忆评测基准与“双层记忆 + 代码版本演进链（diff 链）”方法，保留可复用工程经验与精确代码演化上下文。  
-> 📄 Paper: [docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf)
-
-> [**Hy-Memory-30B-A3B: Attributed Reinforcement Learning for Long-Term Memory Writing**](https://arxiv.org/abs/2610.22196) *（开源模型技术报告）*  
-> **TL;DR:** 训练 30B-A3B MoE 模型，针对长期记忆抽取和冲突消解使用归因强化学习（attributed RL）方法。  
-> 📄 Paper: https://arxiv.org/abs/2610.22196 · Model: https://huggingface.co/tencent/Hy-Memory-30B-A3B
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **Açık kaynak olarak yayımlandı** kuantize **FP8** (**[Hy-Memory-30B-A3B-FP8](https://huggingface.co/tencent/Hy-Memory-30B-A3B-FP8)**) ve **GGUF** (**[Hy-Memory-30B-A3B-GGUF](https://huggingface.co/tencent/Hy-Memory-30B-A3B-GGUF)**).
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **[MemHub v1.0.5](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.5)** sürümü yayınlandı; Çin, İngilizce ve İspanyolca arayüzler dahil.
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **[MemHub v1.0.4](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.4)** ve **[memhub-cli 1.0.5](https://www.npmjs.com/package/memhub-cli)** yayınlandı.
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **Hy Memory 2.0** (`hy-memory==2.0.4`) **[PyPI](https://pypi.org/project/hy-memory/2.0.4/)** üzerinde yayınlandı ve **Hy-Memory** açık kaynak olarak paylaşıldı.
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **[Hy-Memory-30B-A3B](https://huggingface.co/tencent/Hy-Memory-30B-A3B)** Hugging Face üzerinde açık kaynak olarak yayınlandı; eşlik eden teknik rapor da mevcut.
+* *<mark>[yeni]</mark>* 🔥🔥 **[2026-09]**: 📊 **[CMB: A Coding Memory Benchmark for Long-Horizon and Interleaved Coding Agents](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf)** yayınlandı.
+* *<mark>[yeni]</mark>* 🔥🔥 **[2026-08]**: 🎉 **EMNLP 2026**'da kabul edildi: **[Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents](https://arxiv.org/abs/2606.09483)**.
+* 🔥 **[2026-05]**: 🌟 **İlk sürüm**: ilk nesil dual-process bilişsel hafıza çerçevesi **[Hy Memory 1.0](https://mp.weixin.qq.com/s/dH5PGpxqArFZkSq3-QxWYA)** yayınlandı.
 
 ---
 
-## 快速开始
+## Makaleler
 
-### 1. 安装
+**Hy Memory Araştırma Ailesi**'ne hoş geldiniz; bu aile, bilişsel sohbet hafızası, uzun süreli kodlama hafızası ve RL ile eğitilmiş hafıza yazma modellerini kapsar:
+
+> [**Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents**](https://arxiv.org/abs/2606.09483) *(EMNLP 2026'da kabul edildi)*  
+> **TL;DR:** **Chat** için dual-process (System 1 + System 2) bilişsel hafıza mimarisini önerir; kişisel hafızayı 8 katmanlı bir hiyerarşi halinde düzenler (ham diyaloglar, atomik gerçekler, özetler, kimlik, bilgi, zihinsel şemalar ve niyetler).  
+> 📄 Makale: https://arxiv.org/abs/2606.09483
+
+> [**CMB: A Coding Memory Benchmark for Long-Horizon and Interleaved Coding Agents**](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf) *(ICLR 2027 için gönderildi)*  
+> **TL;DR:** Uzun vadeli **Coding** ajanları için değerlendirme kıyaslaması ve iki katmanlı + sürüm evrimi diff-chain hafıza yöntemi tanıtır; yeniden kullanılabilir mühendislik deneyimlerini ve tam kod evrimi bağlamını birlikte korur.  
+> 📄 Makale: [docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf)
+
+> [**Hy-Memory-30B-A3B: Attributed Reinforcement Learning for Long-Term Memory Writing**](https://arxiv.org/abs/2610.22196) *(Açık Model Teknik Raporu)*  
+> **TL;DR:** Uzun vadeli hafıza çıkarımı ve çakışma çözümlemesi için öznitelikli pekiştirmeli öğrenme (attributed RL) ile 30B-A3B MoE modelini eğitir.  
+> 📄 Makale: https://arxiv.org/abs/2610.22196 · Model: https://huggingface.co/tencent/Hy-Memory-30B-A3B
+
+---
+
+## Hızlı Başlangıç
+
+### 1. Kurulum
 
 ```bash
-pip install hy-memory==2.0.4              # 核心（含 ChromaDB 与 Kuzu）
+pip install hy-memory==2.0.4              # çekirdek (ChromaDB ve Kuzu dahil)
 pip install "hy-memory[qdrant]==2.0.4"    # + Qdrant
 pip install "hy-memory[faiss]==2.0.4"     # + FAISS
 pip install "hy-memory[graph]==2.0.4"     # + Neo4j
-pip install "hy-memory[mysql]==2.0.4"     # + MySQL 缓存
-pip install "hy-memory[rerank]==2.0.4"    # + 本地多语言 cross-encoder rerank
-pip install "hy-memory[all]==2.0.4"       # 全部
+pip install "hy-memory[mysql]==2.0.4"     # + MySQL önbellek
+pip install "hy-memory[rerank]==2.0.4"    # + yerel çok dilli cross-encoder rerank
+pip install "hy-memory[all]==2.0.4"       # her şey
 ```
 
-### 2. 配置
+### 2. Yapılandırma
 
-只需 LLM 和 Embedding 两组配置，支持任何兼容 OpenAI API 格式的服务：
+Yalnızca bir LLM ve bir embedding uç noktası gerekir; OpenAI uyumlu herhangi bir servis çalışır:
 
 ```bash
 export MEMORY_LLM_API_KEY="sk-your-key"
@@ -90,43 +90,43 @@ export MEMORY_EMBEDDER_MODEL="text-embedding-v3"
 export MEMORY_EMBEDDING_DIMS=1024
 ```
 
-或使用 OpenAI 默认配置（单个 key）：
+Veya tek bir anahtar ile OpenAI varsayılanlarını kullanabilirsiniz:
 
 ```bash
 export OPENAI_API_KEY="sk-your-key"
 ```
 
-完整配置见 [环境变量参考](docs/env_reference.md)。
+Tam liste için [Çevre Değişkeni Referansı](docs/env_reference.md) bölümüne bakın.
 
-### 3. Chat 记忆
+### 3. Sohbet Hafızası
 
 ```python
 from hy_memory import HyMemoryClient
 
 client = HyMemoryClient(mode="pro")
 
-# 写入：纯文本或 OpenAI messages 格式
-client.add("用户喜欢科幻电影，特别是《星际穿越》", user_id="user_1")
+# Yazma: düz metin veya OpenAI formatı mesajlar
+client.add("Astronomi ve özellikle Interstellar filmlerini seviyorum", user_id="user_1")
 client.add([
-    {"role": "user", "content": "推荐一部电影"},
-    {"role": "assistant", "content": "推荐《星际穿越》，诺兰的经典科幻之作"},
+    {"role": "user", "content": "Bir film öner"},
+    {"role": "assistant", "content": "Interstellar'ı dene — Nolan'ın bilim kurgu şaheseri"},
 ], user_id="user_1")
 
-# 检索：返回 profile / normal / proactive 三路
-results = client.search("用户喜欢什么类型的电影？", user_ids=["user_1"], limit=10)
+# Arama: profile / normal / proactive kanallarını döndürür
+results = client.search("Kullanıcının hangi filmleri sevdiğini sor", user_ids=["user_1"], limit=10)
 for mem in results["memories"]["normal"]:
     print(f"  [{mem['score']:.2f}] {mem['content']}")
 
 client.close()
 ```
 
-### 4. Working / Coding 记忆
+### 4. Çalışma ve Kodlama Hafızası
 
-写入需要包含工具调用轨迹（`tool_calls` 或 `role="tool"` 消息），且仅在 `pro` / `ultra` 模式下生效（`lite` 会忽略 `scene`，一律按原始记忆存取）：
+Yazım işlemleri `tool_calls` veya `role="tool"` mesajlarını içermelidir ve yalnızca `pro` / `ultra` modunda etkin olur (`lite` modunda `scene` yok sayılır ve her şey ham hafıza olarak saklanır):
 
 ```python
 messages = [
-    {"role": "user", "content": "Fix the timeout in the search client."},
+    {"role": "user", "content": "Arama istemcisindeki zaman aşımını düzelt."},
     {"role": "assistant", "content": "", "tool_calls": [{
         "id": "call_1", "type": "function",
         "function": {"name": "apply_patch", "arguments": '{"path":"src/search.py"}'},
@@ -137,14 +137,14 @@ messages = [
 
 client.add(
     messages,
-    scene="coding",                              # 或 "working"
+    scene="coding",                              # veya "working"
     user_id="user_123",
-    workspace_id="github.com/example/service",   # 可选：按仓库 / 项目隔离
-    branch="fix/search-timeout",                 # 可选：需同时传 workspace_id
+    workspace_id="github.com/example/service",   # isteğe bağlı: depo / proje bazlı izole eder
+    branch="fix/search-timeout",                 # isteğe bağlı: workspace_id gerekli
 )
 
 result = client.search(
-    "Which timeout implementation was finally kept?",
+    "Sonunda hangi zaman aşımı uygulaması korunmuş?",
     scene="coding",
     user_ids=["user_123"],
     workspace_id="github.com/example/service",
@@ -152,720 +152,111 @@ result = client.search(
     limit=5,
 )
 
-result["facts"]          # 事实层
-result["experiences"]    # 经验层
-result["chain_block"]    # 仅 coding：版本演进上下文（默认空；需 MEMORY_CODING_CHAIN_BLOCK_ENABLED）
+result["facts"]          # olgu katmanı
+result["experiences"]    # deneyim katmanı
+result["chain_block"]    # yalnız coding: sürüm evrimi bağlamı (MEMORY_CODING_CHAIN_BLOCK_ENABLED olana kadar boş)
 ```
 
-### 5. 自动路由、来源过滤与进阶 API
+### 5. Yönlendirme, Kaynak İzolasyonu ve Gelişmiş API'ler
 
-- **自动场景路由**：不传 `scene` 时，不含工具调用的写入直接走 `chat`（零 LLM 开销），含工具调用的写入用一次 LLM 在 `chat` / `working` / `coding` 间分类。
-- **按来源区分记忆**：写入时传入 `source="openclaw" | "cursor" | "codex"`，检索时通过 `include_sources` / `exclude_sources` 过滤，实现与 `agent_id` 正交的宿主应用隔离。
-- **常用管理与演进 API**：`client.get(id)`、`client.update(id, text)`、`client.delete(id)`、`client.list_memories(user_id=...)`，以及在 `ultra` 模式下显式触发 System 2 演化。
-- **Per-call Embedding 端点覆盖**：支持在 `add()` / `search()` 中传 `embed_override={"base_url": ..., "api_key": ...}`，或使用并发安全的 `with embed_endpoint_override(...):` 覆盖请求端点。
+- **Otomatik sahne yönlendirmesi**: `scene` verilmezse, araç çağrısı olmayan yazılar doğrudan `chat`'e gider (LLM çağrısı yok), araç çağrısı içeren yazılar tek bir LLM çağrısı ile `chat` / `working` / `coding` arasında sınıflandırılır.
+- **Kaynaklara göre ayrı hafızalar**: `add()` içinde `source="openclaw" | "cursor" | "codex"` parametresini geçirin; `search()` içinde `include_sources` / `exclude_sources` ile filtreleyin.
+- **CRUD ve System 2 evrimi**: `client.get(id)`, `client.update(id, text)`, `client.delete(id)`, `client.list_memories(user_id=...)` ve `client.evolve(user_id=...)` (ultra modunda System 2'yi tetikler).
+- **İsteğe özel embedding uç noktası override**: `add()` / `search()` içinde `embed_override={"base_url": ..., "api_key": ...}` kullanın veya `with embed_endpoint_override(...):` konteyneriyle eşzamanlı güvenli çağrı yapın.
 
-服务商配置、存储后端、场景与完整 API 见 [使用指南](docs/usage.md)。
+Sağlayıcı yapılandırması, depolama arka uçları, sahneler ve tam API için [Kullanım Kılavuzu](docs/usage.md) bölümüne bakın.
 
 ---
 
-## 架构设计
+## Sistem Mimarisi
 
 <div align="center">
-  <img src="docs/images/architecture.svg" alt="Hy Memory 架构" width="95%">
+  <img src="docs/images/architecture.svg" alt="Hy Memory architecture" width="95%">
 </div>
 
-Hy Memory 按任务类型提供三种记忆场景（`scene`）。`add()` / `search()` 先经过 scene 路由，再进入 Chat 或 Working / Coding 链路（图中橙色部分为 Coding 独有逻辑）。
+Hy Memory, her görev tipine göre üç hafıza sahnesi (`scene`) sunar. `add()` / `search()` önce sahne yönlendiriciden geçer; ardından Chat veya Working / Coding akışına girer. (Turuncu kısımlar yalnızca Coding'e özeldir.)
 
-| `scene` | 面向的任务 | 记忆形态 |
+| `scene` | Görevler | Hafıza şekli |
 |---|---|---|
-| `chat` | 闲聊、个人信息、偏好、一般问答 | 记忆分层（L0–L7） |
-| `working` | 文档、表格、研究、财经分析、内容创作、电脑操作等生产力任务 | 双层记忆：会话事实 + 可复用经验 |
-| `coding` | 编码、调试、测试、构建、API/SDK、脚本、SQL 等软件工程任务 | 与 working 相同的双层记忆，外加代码版本演进链（diff 链） |
+| `chat` | Küçük konuşmalar, kişisel bilgiler, tercihler, genel soru-cevap | Hiyerarşik hafıza (L0–L7) |
+| `working` | Verimlilik işleri: dokümanlar, elektronik tablolar, araştırma, finans analizi, içerik üretimi, bilgisayar operasyonları | İki katmanlı hafıza: oturum gerçeği + yeniden kullanılabilir deneyimler |
+| `coding` | Yazılım mühendisliği: kodlama, hata ayıklama, test, derleme, API/SDK, betikler, SQL | `working` ile aynı iki katmanlı hafıza + kod sürüm evrimi zinciri |
 
-### 1. Chat：记忆分层
+### 1. Chat: Hafıza Hiyerarşisi
 
-面向个人长期记忆。原始对话逐层抽象成事实、摘要、画像和更高层的认知结构：
+Uzun vadeli kişisel hafıza için yapılandırılmıştır. Ham diyaloglar, katman katman gerçeklere, özetlere, profillere ve daha yüksek düzey bilişsel yapılara dönüştürülür:
 
-| 层 | 名称 | 内容 |
+| Katman | Adı | İçerik |
 |---|---|---|
-| L0 | `BASIC_INFO` | 基础信息 |
-| L1 | `RAW` | 原始对话（append-only） |
-| L2 | `FACT` | 原子事实（版本化，不可变记录） |
-| L3 | `SUMMARY` | 会话摘要 |
-| L4 | `IDENTITY` | 保留 |
-| L5 | `KNOWLEDGE` | 保留 |
-| L6 | `SCHEMA` | 心智模型（抽象叙事模板，图层） |
-| L7 | `INTENTION` | 前瞻意图（带有效期，过期后转为普通事实） |
+| L0 | `BASIC_INFO` | Temel bilgiler |
+| L1 | `RAW` | Ham diyalog (yalnızca eklemeli) |
+| L2 | `FACT` | Atomik gerçekler (sürüm takibiyle, değiştirilemez kayıtlar) |
+| L3 | `SUMMARY` | Oturum özetleri |
+| L4 | `IDENTITY` | Rezerve |
+| L5 | `KNOWLEDGE` | Rezerve |
+| L6 | `SCHEMA` | Zihinsel modeller (soyut anlatı şablonları, grafik katmanı) |
+| L7 | `INTENTION` | Geleceğe dönük niyetler (son kullanma süresi vardır; süresi dolunca sıradan gerçeğe düşer) |
 
-**处理模式**
+**Modlar**
 
-| 模式 | 功能 | 图数据库 | 适用场景 |
-|------|------|---------|---------|
-| `lite` | 只对原始记忆做 embedding 写入与检索，不调 LLM；忽略 `scene` 和 `layers` | 否 | 纯向量 RAG，快速写入，零 LLM 开销 |
-| `pro` | + LLM 提取 + reconcile 冲突处理 | 可选（`MEMORY_ENABLE_GRAPH`，默认关） | 标准场景 |
-| `ultra` | + System 2 图式归纳 + 跨域 sweeper（通过 `evolve()` 触发） | 是（自动开启） | 完整认知架构 |
+| Mod | Ne yapar | Grafik veritabanı | Kullanım durumu |
+|------|----------|------------------|-----------------|
+| `lite` | Yalnızca ham hafıza için embedding yazma ve arama; LLM çağrısı yok; `scene` ve `layers` yok sayılır | Hayır | Saf vektör RAG, hızlı giriş, sıfır LLM maliyeti |
+| `pro` | + LLM çıkarımı + conflict reconcile | İsteğe bağlı (`MEMORY_ENABLE_GRAPH`, varsayılan kapalı) | Standart iş yükleri |
+| `ultra` | + System 2 şema türetimi + çapraz alan sweeper (`evolve()` ile tetiklenir) | Evet (her zaman açık) | Tam bilişsel mimari |
 
-### 2. Working：双层生产力记忆
+### 2. Working: İki Katmanlı Verimlilik Hafızası
 
-面向“做事”的场景。一次带工具调用的会话（trace）会同时产出两层记忆：
+Yapılması gereken işleri hatırlamak için kullanılır. Bir araç çağrısı içeren oturum, aynı anda iki katman üretir:
 
-| 层 | 记录什么 | 每次会话产出 | 结构 |
+| Katman | Ne kaydeder | Her oturumda | Yapı |
 |---|---|---|---|
-| **事实层**（`WorkingFact`） | 这次会话做了什么：任务、做法、结果 | 恰好 1 条，不设门槛 | `statement`、`subject`、`files`、`details`（原文留存） |
-| **经验层**（`Experience`） | 下次遇到类似任务可以直接复用的做法 | 0–N 条，需通过价值门槛 | `task`、`search_keys`、`solution`、`boundary_envs`、`confidence` |
+| **Facts** (`WorkingFact`) | Bu oturum ne yaptığını: görev, yaklaşım, sonuç | Tam olarak 1, eşik yok | `statement`, `subject`, `files`, `details` (orijinal kaynak) |
+| **Experiences** | Benzer bir görev tekrar ortaya çıktığında yeniden kullanılabilecek yaklaşımlar | 0–N, değer eşiği geçmeli | `task`, `search_keys`, `solution`, `boundary_envs`, `confidence` |
 
-事实层保证“做过的事一定记得”，经验层负责“学到的东西能复用”。两层互相链接（`fact.derived_experience_ids` ↔ `experience.source_fact_ids`），旧事实被覆盖时会被新信息取代。
+Fact katmanı "yapılan işin unutulmayacağını" garanti eder; deneyim katmanı "öğrenilen şeyin tekrar kullanılabilir" olmasını sağlar. İki katman birbiriyle bağlantılıdır (`fact.derived_experience_ids` ↔ `experience.source_fact_ids`), eski gerçekler güncellendiğinde yerini yeni olanlara bırakır.
 
-### 3. Coding：双层记忆 + 版本演进链
+### 3. Coding: İki Katmanlı Hafıza + Sürüm Evrimi Zinciri
 
-Coding 与 Working **复用同一套双层 pipeline 和数据 schema**，区别有三点：
+Coding, Working ile **aynı iki katmanlı pipeline ve veri şemasını** kullanır. Üç farkı vardır:
 
 | | Working | Coding |
 |---|---|---|
-| **抽取规范** | 生产力任务规范 | 软件工程规范：主语必须是代码或决策，记录精确坐标（文件 / 函数 / 分支）而不是粘贴代码 |
-| **存储** | `coding_memory.db` + `*_coding_keys` / `*_working_facts` 向量集合 | `coding_memory_cv.db` + `*_cv` 向量集合，与 working 完全隔离 |
-| **版本演进链** | 无 | **有**：记录同一处代码被改了几次、每次改了什么 |
+| **Çıkarım spesifikasyonu** | Verimlilik görevi | Yazılım mühendisliği spesifikasyonu: konu kod veya karar olmalı; kodu yapıştırmak yerine kesin koordinatlar (dosya / fonksiyon / dal) kaydedilir |
+| **Depolama** | `coding_memory.db` + `*_coding_keys` / `*_working_facts` koleksiyonları | `coding_memory_cv.db` + `*_cv` koleksiyonları, working'den tamamen izole |
+| **Sürüm evrimi zinciri** | Yok | **Var**: aynı kod ne kadar kez değiştiği ve her değişikliğin ne olduğu |
 
-**为什么需要版本演进链**：事实层的抽取刻意不粘贴代码（预算留给更有信息量的坐标），所以被撤掉的那一版代码不会出现在事实里。那一版往往不在工作区、也不在 HEAD，事后读不回来。版本演进链零 LLM 地把每一版的真实 diff 存下来，补上摘要必须丢失的这类信息。
+**Neden sürüm evrimi zinciri var?**: Olgu çıkarımı bilinçli şekilde kodu yapıştırmaz (bütçe daha bilgi içeren koordinatlara ayrılır), bu yüzden daha sonra geri alınan bir sürüm hiç bir olguda görünmez. O sürüm genellikle çalışma alanında ya da HEAD üzerinde bulunmaz; dolayısıyla sonradan okunamaz. Zincir, her versiyonun gerçek diff'ini LLM çağrısı olmadan saklar; bu da kararı vermeden kaçırılan bilgiyi eksiksiz tamamlar.
 
-**设计要点**（`hy_memory/coding/chain_store.py`）：
+**Tasarım öne çıkanlar** (`hy_memory/coding/chain_store.py`):
 
-- **装饰器而非检索器**：向量层决定返回哪几条事实；演进链只负责在每条事实下面挂上它所涉及代码的全部改动版本（每版的用户原话 + 真实 diff）。
-- **修改来源**：本地 Git diff（设置 `MEMORY_CODING_CHAIN_REPO_ROOT`），或工具轨迹中带 `path` / `old` / `new` 的确定性替换动作。
-- **分链粒度与隔离**：一条 thread 对应“某分支、某文件、某函数的某一块”，由 `user_id` 与 `workspace_id` 共同隔离。
+- **Getirici değil dekoratör**: vektör katmanı hangi gerçeklerin döndürüleceğine karar verir; zincir yalnızca her gerçek altında ilgili kodun tüm revizyonlarını ekler (o revizyon için kullanıcının kendi kelimeleri + gerçek diff).
+- **Değişiklik kaynakları**: yerel Git diff ( `MEMORY_CODING_CHAIN_REPO_ROOT` ayarlayın ) veya araç izindeki `path` / `old` / `new` değerleriyle deterministik replace eylemleri.
+- **Zincir granülerliği ve izolasyonu**: bir thread, tek bir dal, tek bir dosya ve tek bir fonksiyon bloğu için tek bir akışı temsil eder; `user_id` + `workspace_id` ile izole edilir.
 
 ---
 
-## 支持
+## Destek
 
-### 存储后端
+### Depolama Arka Uçları
 
-- 向量库：ChromaDB（默认）、Qdrant、FAISS
-- 图库（ultra 模式）：Kuzu（默认）、Neo4j
-- Working / Coding 的元数据使用本地 SQLite
+- Vektör depoları: ChromaDB (varsayılan), Qdrant, FAISS
+- Grafik depoları (ultra modu): Kuzu (varsayılan), Neo4j
+- Working / Coding meta verileri: yerel SQLite
 
-### 文档
+### Dökümantasyon
 
-- [使用指南](docs/usage.md) — 完整配置参考、API 详情、部署模式
-- [环境变量参考](docs/env_reference.md) — 配置说明与默认值
-- [Search 与 Reader 指南](docs/hy_memory_search_skill.md) — Reader 选择、Schema 配额、Rerank 与返回通道
-- [Working/Coding Scene](docs/scene_coding_usage.md) — 生产力记忆路由、返回结构与 Coding 链行为
-- [Graph 记忆设计](docs/pro_graph_design.md) — 图投影、重排、关系路径与部署限制
-- [环境变量模板](.env.example) — 可直接复制的配置模板
-- [MemHub 说明文档](memhub/README.md) — 本地优先桌面端与 CLI 产品总览、Runtime 命令与隐私边界
-- [Hermes 原生记忆 Provider](plugins/hermes/README.md) — 显式用户与 Agent 隔离，独立 HTTP 服务，自动记录与召回默认关闭。
-- [OpenClaw 插件](plugins/openclaw/README.md) — Agent 集成见 `plugins/`（总览：[plugins/README.md](plugins/README.md)）
+- [Kullanım kılavuzu](docs/usage.md) — tam yapılandırma referansı, API ayrıntıları, dağıtım modları
+- [Çevre değişkenleri](docs/env_reference.md) — ayarlar ve varsayılan değerler
+- [Arama ve Reader kılavuzu](docs/hy_memory_search_skill.md) — reader seçimi, şema kota yönetimi, rerank ve dönüş kanalları
+- [Working / Coding sahneleri](docs/scene_coding_usage.md) — üretkenlik hafızası yönlendirme, yanıt şekilleri ve kodlama zinciri davranışı
+- [Graph hafıza tasarımı](docs/pro_graph_design.md) — grafik projeksiyonu, rerank, ilişki yolları ve dağıtım sınırları
+- [Çevre değişkeni şablonu](.env.example) — doğrudan kopyalanabilir yapılandırma şablonu
+- [MemHub README](memhub/README.md) — yerel öncelikli masaüstü ve CLI ürün özeti, çalışma zamanı komutları ve gizlilik sınırları
+- [Hermes native memory provider](plugins/hermes/README.md) — açık sahiple/agent alan ayrımı; ayrı HTTP servis; otomatik yakalama ve hatırlama isteğe bağlıdır.
+- [OpenClaw eklentisi](plugins/openclaw/README.md) — `plugins/` altında agent entegrasyonları (özet: [plugins/README.md](plugins/README.md))
 
-### License
+### Lisans
 
-Hy-Memory 使用 Apache-2.0，详见 [LICENSE](LICENSE)。第三方组件仍受各自许可证与声明约束。
+Hy-Memory Apache-2.0 lisansı altında kullanılır. [LICENSE](LICENSE) dosyasına bakın. Üçüncü taraf bileşenler kendi lisansları ve bildirimleri altında kalır.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-n
