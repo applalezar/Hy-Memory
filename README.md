@@ -21,7 +21,7 @@
 
 [English](readme_en.md) | Türkçe | [中文](README.zh.md)
 
-**[Hy Memory](https://memory.hunyuan.tencent.com/)** ([Resmî Web Sitesi](https://memory.hunyuan.tencent.com/)) üretim seviyesinde, LLM ajanları için ikili sistem bilişsel hafıza motoru ve Python SDK'sidir (`hy-memory`). Kişisel hafıza, çalışma hafızası ve kodlama hafızasını tek bir bellek altyapısında birleştirir.
+**[Hy Memory](https://memory.hunyuan.tencent.com/)** ([Resmî Web Sitesi](https://memory.hunyuan.tencent.com/)) üretim seviyesinde, LLM ajanları için ikili sistem bilişsel hafıza motoru ve Python SDK'sidir. Kısa, hafızaya dayalı, kendini geliştiren AI ajanları için tasarlanmıştır.
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/94405890-8429-47c2-9084-38f7ed9f126f" controls width="640"></video>
@@ -32,11 +32,11 @@
 
 ## Son Haberler
 
-* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **Açık kaynak olarak yayımlandı** kuantize **FP8** (**[Hy-Memory-30B-A3B-FP8](https://huggingface.co/tencent/Hy-Memory-30B-A3B-FP8)**) ve **GGUF** (**[Hy-Memory-30B-A3B-GGUF](https://huggingface.co/tencent/Hy-Memory-30B-A3B-GGUF)**).
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **Açık kaynak olarak yayımlandı** kuantize **FP8** (**[Hy-Memory-30B-A3B-FP8](https://huggingface.co/tencent/Hy-Memory-30B-A3B-FP8)**) ve **[Hy-Memory-30B-A3B-GFUF](https://huggingface.co/tencent/Hy-Memory-30B-A3B-GFUF)**.
 * *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **[MemHub v1.0.5](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.5)** sürümü yayınlandı; Çin, İngilizce ve İspanyolca arayüzler dahil.
-* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **[MemHub v1.0.4](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.4)** ve **[memhub-cli 1.0.5](https://www.npmjs.com/package/memhub-cli)** yayınlandı.
-* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **Hy Memory 2.0** (`hy-memory==2.0.4`) **[PyPI](https://pypi.org/project/hy-memory/2.0.4/)** üzerinde yayınlandı ve **Hy-Memory** açık kaynak olarak paylaşıldı.
-* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **[Hy-Memory-30B-A3B](https://huggingface.co/tencent/Hy-Memory-30B-A3B)** Hugging Face üzerinde açık kaynak olarak yayınlandı; eşlik eden teknik rapor da mevcut.
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 📦 **[MemHub v1.0.4](https://github.com/Tencent-Hunyuan/Hy-Memory/releases/tag/v1.0.4)** ve **[memhub-cli 1.0.5](https://www.npmjs.com/package/memhub-cli)** yayımlandı.
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **Hy Memory 2.0** (`hy-memory==2.0.4`) **[PyPI](https://pypi.org/project/hy-memory/2.0.4/)** üzerinde yayınlandı ve **Hy-Memory** açık kaynak geliştirme topluluğuna ulaştı.
+* *<mark>[yeni]</mark>* 🔥🔥🔥 **[2026-10]**: 🚀 **[Hy-Memory-30B-A3B](https://huggingface.co/tencent/Hy-Memory-30B-A3B)** Hugging Face üzerinde açık kaynak olarak yayınlandı; eşlik eden [täyı?]
 * *<mark>[yeni]</mark>* 🔥🔥 **[2026-09]**: 📊 **[CMB: A Coding Memory Benchmark for Long-Horizon and Interleaved Coding Agents](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf)** yayınlandı.
 * *<mark>[yeni]</mark>* 🔥🔥 **[2026-08]**: 🎉 **EMNLP 2026**'da kabul edildi: **[Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents](https://arxiv.org/abs/2606.09483)**.
 * 🔥 **[2026-05]**: 🌟 **İlk sürüm**: ilk nesil dual-process bilişsel hafıza çerçevesi **[Hy Memory 1.0](https://mp.weixin.qq.com/s/dH5PGpxqArFZkSq3-QxWYA)** yayınlandı.
@@ -48,11 +48,11 @@
 **Hy Memory Araştırma Ailesi**'ne hoş geldiniz; bu aile, bilişsel sohbet hafızası, uzun süreli kodlama hafızası ve RL ile eğitilmiş hafıza yazma modellerini kapsar:
 
 > [**Memory Beyond Recall: A Dual-Process Cognitive Memory System for Self-Evolving LLM Agents**](https://arxiv.org/abs/2606.09483) *(EMNLP 2026'da kabul edildi)*  
-> **TL;DR:** **Chat** için dual-process (System 1 + System 2) bilişsel hafıza mimarisini önerir; kişisel hafızayı 8 katmanlı bir hiyerarşi halinde düzenler (ham diyaloglar, atomik gerçekler, özetler, kimlik, bilgi, zihinsel şemalar ve niyetler).  
+> **TL;DR:** **Chat** için dual-process (System 1 + System 2) bilişsel hafıza mimarisini önerir; kişisel hafızayı 8 katmanlı bir hiyerarşi halinde düzenler (ham diyaloglar, atomik gerçekler, özetler, profiller ve daha yüksek düzey bilişsel yapılar).  
 > 📄 Makale: https://arxiv.org/abs/2606.09483
 
 > [**CMB: A Coding Memory Benchmark for Long-Horizon and Interleaved Coding Agents**](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf) *(ICLR 2027 için gönderildi)*  
-> **TL;DR:** Uzun vadeli **Coding** ajanları için değerlendirme kıyaslaması ve iki katmanlı + sürüm evrimi diff-chain hafıza yöntemi tanıtır; yeniden kullanılabilir mühendislik deneyimlerini ve tam kod evrimi bağlamını birlikte korur.  
+> **TL;DR:** Uzun vadeli **Coding** ajanları için değerlendirme kıyaslaması ve iki katmanlı + sürüm evrimi diff-chain hafıza yöntemi tanıtır; yeniden kullanılabilir mühendislik deneyimi ve hatırlama ücretini düşürür.  
 > 📄 Makale: [docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf](docs/papers/CMB_A_Coding_Memory_Benchmark_for_Long_Horizon_and_Interleaved_Coding_Agents.pdf)
 
 > [**Hy-Memory-30B-A3B: Attributed Reinforcement Learning for Long-Term Memory Writing**](https://arxiv.org/abs/2610.22196) *(Açık Model Teknik Raporu)*  
@@ -96,7 +96,7 @@ Veya tek bir anahtar ile OpenAI varsayılanlarını kullanabilirsiniz:
 export OPENAI_API_KEY="sk-your-key"
 ```
 
-Tam liste için [Çevre Değişkeni Referansı](docs/env_reference.md) bölümüne bakın.
+Tam liste için [Çevre Değişkeni Referansı](docs_tr/env_reference.md) bölümüne bakın.
 
 ### 3. Sohbet Hafızası
 
@@ -113,7 +113,7 @@ client.add([
 ], user_id="user_1")
 
 # Arama: profile / normal / proactive kanallarını döndürür
-results = client.search("Kullanıcının hangi filmleri sevdiğini sor", user_ids=["user_1"], limit=10)
+results = client.search("Kullanıcının hangi filmlerini sevdiğini sor", user_ids=["user_1"], limit=10)
 for mem in results["memories"]["normal"]:
     print(f"  [{mem['score']:.2f}] {mem['content']}")
 
@@ -122,7 +122,7 @@ client.close()
 
 ### 4. Çalışma ve Kodlama Hafızası
 
-Yazım işlemleri `tool_calls` veya `role="tool"` mesajlarını içermelidir ve yalnızca `pro` / `ultra` modunda etkin olur (`lite` modunda `scene` yok sayılır ve her şey ham hafıza olarak saklanır):
+Yazım işlemleri `tool_calls` veya `role="tool"` mesajlarını içermelidir ve yalnızca `pro` / `ultra` modunda etkin olur (`lite` modunda `scene` yok sayılır ve her şey ham hafıza olarak saklanır).
 
 ```python
 messages = [
@@ -159,12 +159,12 @@ result["chain_block"]    # yalnız coding: sürüm evrimi bağlamı (MEMORY_CODI
 
 ### 5. Yönlendirme, Kaynak İzolasyonu ve Gelişmiş API'ler
 
-- **Otomatik sahne yönlendirmesi**: `scene` verilmezse, araç çağrısı olmayan yazılar doğrudan `chat`'e gider (LLM çağrısı yok), araç çağrısı içeren yazılar tek bir LLM çağrısı ile `chat` / `working` / `coding` arasında sınıflandırılır.
+- **Otomatik sahne yönlendirmesi**: `scene` verilmezse, araç çağrısı olmayan yazılar doğrudan `chat`'e gider (LLM çağrısı yok), araç çağrısı içeren yazılar tek bir LLM çağrısı ile işlenir.
 - **Kaynaklara göre ayrı hafızalar**: `add()` içinde `source="openclaw" | "cursor" | "codex"` parametresini geçirin; `search()` içinde `include_sources` / `exclude_sources` ile filtreleyin.
 - **CRUD ve System 2 evrimi**: `client.get(id)`, `client.update(id, text)`, `client.delete(id)`, `client.list_memories(user_id=...)` ve `client.evolve(user_id=...)` (ultra modunda System 2'yi tetikler).
-- **İsteğe özel embedding uç noktası override**: `add()` / `search()` içinde `embed_override={"base_url": ..., "api_key": ...}` kullanın veya `with embed_endpoint_override(...):` konteyneriyle eşzamanlı güvenli çağrı yapın.
+- **İsteğe özel embedding uç noktası override**: `add()` / `search()` içinde `embed_override={"base_url": ..., "api_key": ...}` kullanın veya `with embed_endpoint_override(...):` konteyneriyle geçici olarak değiştirin.
 
-Sağlayıcı yapılandırması, depolama arka uçları, sahneler ve tam API için [Kullanım Kılavuzu](docs/usage.md) bölümüne bakın.
+Sağlayıcı yapılandırması, depolama arka uçları, sahneler ve tam API için [Kullanım Kılavuzu](docs_tr/usage.md) bölümüne bakın.
 
 ---
 
@@ -174,12 +174,12 @@ Sağlayıcı yapılandırması, depolama arka uçları, sahneler ve tam API içi
   <img src="docs/images/architecture.svg" alt="Hy Memory architecture" width="95%">
 </div>
 
-Hy Memory, her görev tipine göre üç hafıza sahnesi (`scene`) sunar. `add()` / `search()` önce sahne yönlendiriciden geçer; ardından Chat veya Working / Coding akışına girer. (Turuncu kısımlar yalnızca Coding'e özeldir.)
+Hy Memory, her görev tipine göre üç hafıza sahnesi (`scene`) sunar. `add()` / `search()` önce sahne yönlendiriciden geçer; ardından Chat veya Working / Coding akışına girer. (Turuncu kısım `chat`, mavi `working`, yeşil `coding` ve koyu mavi `memory` geri çağrısı.)
 
 | `scene` | Görevler | Hafıza şekli |
 |---|---|---|
 | `chat` | Küçük konuşmalar, kişisel bilgiler, tercihler, genel soru-cevap | Hiyerarşik hafıza (L0–L7) |
-| `working` | Verimlilik işleri: dokümanlar, elektronik tablolar, araştırma, finans analizi, içerik üretimi, bilgisayar operasyonları | İki katmanlı hafıza: oturum gerçeği + yeniden kullanılabilir deneyimler |
+| `working` | Verimlilik işleri: dokümanlar, elektronik tablolar, araştırma, finans analizi, içerik üretimi, bilgisayar operasyonları | İki katmanlı hafıza: oturum gerçeği + yeniden kullanılabilir deneyim |
 | `coding` | Yazılım mühendisliği: kodlama, hata ayıklama, test, derleme, API/SDK, betikler, SQL | `working` ile aynı iki katmanlı hafıza + kod sürüm evrimi zinciri |
 
 ### 1. Chat: Hafıza Hiyerarşisi
@@ -214,7 +214,7 @@ Yapılması gereken işleri hatırlamak için kullanılır. Bir araç çağrıs�
 | **Facts** (`WorkingFact`) | Bu oturum ne yaptığını: görev, yaklaşım, sonuç | Tam olarak 1, eşik yok | `statement`, `subject`, `files`, `details` (orijinal kaynak) |
 | **Experiences** | Benzer bir görev tekrar ortaya çıktığında yeniden kullanılabilecek yaklaşımlar | 0–N, değer eşiği geçmeli | `task`, `search_keys`, `solution`, `boundary_envs`, `confidence` |
 
-Fact katmanı "yapılan işin unutulmayacağını" garanti eder; deneyim katmanı "öğrenilen şeyin tekrar kullanılabilir" olmasını sağlar. İki katman birbiriyle bağlantılıdır (`fact.derived_experience_ids` ↔ `experience.source_fact_ids`), eski gerçekler güncellendiğinde yerini yeni olanlara bırakır.
+Fact katmanı "yapılan işin unutulmayacağını" garanti eder; deneyim katmanı "öğrenilen şeyin tekrar kullanılabilir" olmasını sağlar. İki katman birbiriyle bağlantılıdır (`fact.derived_experience_ids` ve `experience.source_fact_ids`).
 
 ### 3. Coding: İki Katmanlı Hafıza + Sürüm Evrimi Zinciri
 
@@ -226,12 +226,12 @@ Coding, Working ile **aynı iki katmanlı pipeline ve veri şemasını** kullan�
 | **Depolama** | `coding_memory.db` + `*_coding_keys` / `*_working_facts` koleksiyonları | `coding_memory_cv.db` + `*_cv` koleksiyonları, working'den tamamen izole |
 | **Sürüm evrimi zinciri** | Yok | **Var**: aynı kod ne kadar kez değiştiği ve her değişikliğin ne olduğu |
 
-**Neden sürüm evrimi zinciri var?**: Olgu çıkarımı bilinçli şekilde kodu yapıştırmaz (bütçe daha bilgi içeren koordinatlara ayrılır), bu yüzden daha sonra geri alınan bir sürüm hiç bir olguda görünmez. O sürüm genellikle çalışma alanında ya da HEAD üzerinde bulunmaz; dolayısıyla sonradan okunamaz. Zincir, her versiyonun gerçek diff'ini LLM çağrısı olmadan saklar; bu da kararı vermeden kaçırılan bilgiyi eksiksiz tamamlar.
+**Neden sürüm evrimi zinciri var?**: Olgu çıkarımı bilinçli şekilde kodu yapıştırmaz (bütçe daha bilgi içeren koordinatlara ayrılır), bu yüzden daha sonra geri alınan bir sürüm için tam kod revizyonu ve değişiklik bağılamı gerekir.
 
 **Tasarım öne çıkanlar** (`hy_memory/coding/chain_store.py`):
 
-- **Getirici değil dekoratör**: vektör katmanı hangi gerçeklerin döndürüleceğine karar verir; zincir yalnızca her gerçek altında ilgili kodun tüm revizyonlarını ekler (o revizyon için kullanıcının kendi kelimeleri + gerçek diff).
-- **Değişiklik kaynakları**: yerel Git diff ( `MEMORY_CODING_CHAIN_REPO_ROOT` ayarlayın ) veya araç izindeki `path` / `old` / `new` değerleriyle deterministik replace eylemleri.
+- **Getirici değil dekoratör**: vektör katmanı hangi gerçeklerin döndürüleceğine karar verir; zincir yalnızca her gerçek altında ilgili kodun tüm revizyonlarını ekler (o revizyon için gerekli diff)
+- **Değişiklik kaynakları**: yerel Git diff (`MEMORY_CODING_CHAIN_REPO_ROOT` ayarlayın) veya araç izindeki `path` / `old` / `new` değerleriyle deterministik replace eylemleri.
 - **Zincir granülerliği ve izolasyonu**: bir thread, tek bir dal, tek bir dosya ve tek bir fonksiyon bloğu için tek bir akışı temsil eder; `user_id` + `workspace_id` ile izole edilir.
 
 ---
@@ -246,11 +246,14 @@ Coding, Working ile **aynı iki katmanlı pipeline ve veri şemasını** kullan�
 
 ### Dökümantasyon
 
-- [Kullanım kılavuzu](docs/usage.md) — tam yapılandırma referansı, API ayrıntıları, dağıtım modları
-- [Çevre değişkenleri](docs/env_reference.md) — ayarlar ve varsayılan değerler
-- [Arama ve Reader kılavuzu](docs/hy_memory_search_skill.md) — reader seçimi, şema kota yönetimi, rerank ve dönüş kanalları
-- [Working / Coding sahneleri](docs/scene_coding_usage.md) — üretkenlik hafızası yönlendirme, yanıt şekilleri ve kodlama zinciri davranışı
-- [Graph hafıza tasarımı](docs/pro_graph_design.md) — grafik projeksiyonu, rerank, ilişki yolları ve dağıtım sınırları
+- [Kullanım kılavuzu](docs_tr/usage.md) — tam yapılandırma referansı, API ayrıntıları, dağıtım modları
+- [Çevre değişkenleri](docs_tr/env_reference.md) — ayarlar ve varsayılan değerler
+- [Monorepo tasarımı](docs_tr/monorepo.md) — çoklu paket / monorepo yapısı ve arayüz ayrımları
+- [Performans izleme](docs_tr/perf_trace_README.md) — izleme, profil oluşturma ve verimlilik notları
+- [Arama ve Reader kılavuzu](docs_tr/hy_memory_search_skill.md) — reader seçimi, şema kota yönetimi, rerank ve dönüş kanalları
+- [Multi-speaker design](docs_tr/multi_speaker_design.md) — çok konuşmacılı senaryo tasarımı ve ilişkisel model yaklaşımı
+- [Working / Coding sahneleri](docs_tr/scene_coding_usage.md) — üretkenlik hafızası yönlendirme, yanıt şekilleri ve kodlama zinciri davranışı
+- [Graph hafıza tasarımı](docs_tr/pro_graph_design.md) — grafik projeksiyonu, rerank, ilişki yolları ve dağıtım sınırları
 - [Çevre değişkeni şablonu](.env.example) — doğrudan kopyalanabilir yapılandırma şablonu
 - [MemHub README](memhub/README.md) — yerel öncelikli masaüstü ve CLI ürün özeti, çalışma zamanı komutları ve gizlilik sınırları
 - [Hermes native memory provider](plugins/hermes/README.md) — açık sahiple/agent alan ayrımı; ayrı HTTP servis; otomatik yakalama ve hatırlama isteğe bağlıdır.
@@ -259,4 +262,3 @@ Coding, Working ile **aynı iki katmanlı pipeline ve veri şemasını** kullan�
 ### Lisans
 
 Hy-Memory Apache-2.0 lisansı altında kullanılır. [LICENSE](LICENSE) dosyasına bakın. Üçüncü taraf bileşenler kendi lisansları ve bildirimleri altında kalır.
-
